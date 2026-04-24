@@ -1,0 +1,1660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>GharKharcha — Family Budget Made Simple</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --orange:#FF6B35;--orange-light:#FFF0EB;--orange-dark:#CC4E1A;
+  --green:#2ECC71;--green-light:#E8FAF0;--green-dark:#1A8A4A;
+  --blue:#3498DB;--blue-light:#EAF4FB;--blue-dark:#1A6FA0;
+  --yellow:#F1C40F;--yellow-light:#FEFAE0;--yellow-dark:#9A7D0A;
+  --red:#E74C3C;--red-light:#FDEDEC;--red-dark:#A93226;
+  --purple:#9B59B6;--purple-light:#F5EEF8;
+  --bg:#FFF8F0;--surface:#FFFFFF;--surface2:#FFF3E8;
+  --border:rgba(0,0,0,0.08);--border2:rgba(0,0,0,0.14);
+  --text:#2C1810;--text2:#7D5A4A;--text3:#B08070;
+  --radius:16px;--radius-sm:10px;--radius-pill:99px;
+  --shadow:0 4px 20px rgba(255,107,53,0.1);
+}
+html{scroll-behavior:smooth}
+body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+
+/* NAV */
+nav{background:var(--orange);padding:0 1.5rem;height:60px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 12px rgba(255,107,53,0.3)}
+.nav-logo{font-family:'Baloo 2',sans-serif;font-size:1.4rem;font-weight:800;color:#fff;letter-spacing:-0.5px}
+.nav-logo span{opacity:0.7;font-weight:500;font-size:0.85rem;display:block;line-height:1;margin-top:-4px}
+.nav-month{font-size:13px;font-weight:600;color:rgba(255,255,255,0.9);background:rgba(255,255,255,0.2);padding:6px 14px;border-radius:var(--radius-pill)}
+
+/* HERO BALANCE */
+.balance-hero{background:linear-gradient(135deg,var(--orange) 0%,#FF8C42 100%);padding:2rem 1.5rem 3.5rem;text-align:center;position:relative;overflow:hidden}
+.balance-hero::before{content:'';position:absolute;top:-40px;right:-40px;width:180px;height:180px;background:rgba(255,255,255,0.08);border-radius:50%}
+.balance-hero::after{content:'';position:absolute;bottom:-60px;left:-30px;width:220px;height:220px;background:rgba(255,255,255,0.05);border-radius:50%}
+.balance-label{font-size:13px;font-weight:600;color:rgba(255,255,255,0.8);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+.balance-amount{font-family:'Baloo 2',sans-serif;font-size:3.2rem;font-weight:800;color:#fff;line-height:1;margin-bottom:4px}
+.balance-sub{font-size:13px;color:rgba(255,255,255,0.75)}
+.balance-pills{display:flex;gap:10px;justify-content:center;margin-top:1.25rem;flex-wrap:wrap}
+.balance-pill{background:rgba(255,255,255,0.18);border:1px solid rgba(255,255,255,0.3);border-radius:var(--radius-pill);padding:6px 14px;font-size:12px;font-weight:600;color:#fff}
+.balance-pill.spent{background:rgba(231,76,60,0.3);border-color:rgba(231,76,60,0.5)}
+.balance-pill.saved{background:rgba(46,204,113,0.3);border-color:rgba(46,204,113,0.5)}
+.budget-progress{background:rgba(255,255,255,0.2);height:8px;border-radius:99px;margin:1.25rem 1.5rem 0;overflow:hidden}
+.budget-progress-fill{height:100%;border-radius:99px;background:#fff;transition:width 0.8s ease}
+
+/* TABS */
+.tabs{display:flex;background:var(--surface);border-bottom:2px solid var(--border);position:sticky;top:0;z-index:100;margin-top:-1.5rem;border-radius:var(--radius) var(--radius) 0 0;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;box-shadow:var(--shadow)}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:0 0 auto;padding:14px 10px;font-family:'Baloo 2',sans-serif;font-size:12px;font-weight:700;color:var(--text3);border:none;background:transparent;cursor:pointer;transition:all 0.2s;display:flex;flex-direction:column;align-items:center;gap:3px;min-width:60px}
+.tab .tab-icon{font-size:18px}
+.tab.active{color:var(--orange);border-bottom:3px solid var(--orange)}
+.tab-content{display:none;padding:1.25rem 1.5rem 6rem}
+.tab-content.active{display:block}
+
+/* VOICE INPUT */
+.voice-section{background:var(--surface);border-radius:var(--radius);padding:1.25rem;margin-bottom:1.25rem;box-shadow:var(--shadow)}
+.voice-label{font-family:'Baloo 2',sans-serif;font-size:1rem;font-weight:700;margin-bottom:0.85rem;display:flex;align-items:center;gap:8px}
+.voice-row{display:flex;gap:8px;align-items:center}
+.voice-input{flex:1;border:2px solid var(--border2);border-radius:12px;padding:12px 16px;font-family:'Nunito',sans-serif;font-size:15px;color:var(--text);background:var(--bg);outline:none;transition:border-color 0.15s}
+.voice-input:focus{border-color:var(--orange)}
+.voice-btn{width:48px;height:48px;border-radius:50%;background:var(--orange);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:20px;transition:all 0.15s;flex-shrink:0;box-shadow:0 4px 12px rgba(255,107,53,0.35)}
+.voice-btn:hover{transform:scale(1.08)}
+.voice-btn.listening{background:var(--red);animation:pulse-ring 1.2s ease infinite}
+@keyframes pulse-ring{0%,100%{box-shadow:0 0 0 0 rgba(231,76,60,0.4)}50%{box-shadow:0 0 0 12px rgba(231,76,60,0)}}
+.voice-hint{font-size:12px;color:var(--text3);margin-top:8px}
+.voice-hint span{background:var(--surface2);padding:2px 8px;border-radius:6px;margin:0 2px;font-weight:600;color:var(--text2)}
+.add-btn{width:100%;margin-top:10px;background:var(--orange);color:#fff;border:none;font-family:'Baloo 2',sans-serif;font-size:15px;font-weight:700;padding:13px;border-radius:12px;cursor:pointer;transition:all 0.15s}
+.add-btn:hover{opacity:0.9;transform:translateY(-1px)}
+
+/* CATEGORY QUICK PICK */
+.cat-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.cat-quick{font-size:12px;font-weight:600;padding:5px 12px;border-radius:var(--radius-pill);border:1.5px solid var(--border2);background:var(--surface);color:var(--text2);cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:4px}
+.cat-quick:hover,.cat-quick.selected{border-color:var(--orange);background:var(--orange-light);color:var(--orange-dark)}
+
+/* EXPENSE LIST */
+.expense-list{display:flex;flex-direction:column;gap:8px}
+.expense-item{background:var(--surface);border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 8px rgba(0,0,0,0.05);animation:slideIn 0.3s ease}
+@keyframes slideIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+.expense-emoji{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.expense-info{flex:1}
+.expense-name{font-size:14px;font-weight:700;color:var(--text)}
+.expense-meta{font-size:11px;color:var(--text3);margin-top:1px}
+.expense-amount{font-family:'Baloo 2',sans-serif;font-size:1.1rem;font-weight:800;color:var(--red)}
+.expense-del{background:none;border:none;font-size:16px;cursor:pointer;color:var(--text3);padding:4px;opacity:0.5;transition:opacity 0.15s}
+.expense-del:hover{opacity:1;color:var(--red)}
+.empty-state{text-align:center;padding:2.5rem 1rem;color:var(--text3)}
+.empty-state .empty-icon{font-size:3rem;margin-bottom:0.75rem}
+.empty-state p{font-size:14px;line-height:1.6}
+
+/* SUMMARY CARDS */
+.summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1.25rem}
+.summary-card{background:var(--surface);border-radius:var(--radius);padding:1rem;text-align:center;box-shadow:var(--shadow)}
+.summary-card .s-icon{font-size:1.6rem;margin-bottom:6px}
+.summary-card .s-label{font-size:11px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:0.5px}
+.summary-card .s-val{font-family:'Baloo 2',sans-serif;font-size:1.4rem;font-weight:800;margin-top:2px}
+.cat-breakdown{background:var(--surface);border-radius:var(--radius);padding:1.25rem;box-shadow:var(--shadow)}
+.cat-breakdown h3{font-family:'Baloo 2',sans-serif;font-size:1rem;font-weight:700;margin-bottom:1rem}
+.cat-bar-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.cat-bar-label{font-size:12px;font-weight:600;width:90px;flex-shrink:0;display:flex;align-items:center;gap:5px}
+.cat-bar-wrap{flex:1;height:8px;background:var(--surface2);border-radius:99px;overflow:hidden}
+.cat-bar-fill{height:100%;border-radius:99px;transition:width 0.8s ease}
+.cat-bar-amt{font-size:12px;font-weight:700;color:var(--text2);min-width:55px;text-align:right}
+
+/* SAVINGS GOALS */
+.goals-list{display:flex;flex-direction:column;gap:12px;margin-bottom:1.25rem}
+.goal-card{background:var(--surface);border-radius:var(--radius);padding:1.25rem;box-shadow:var(--shadow)}
+.goal-header{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.goal-icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.goal-name{font-family:'Baloo 2',sans-serif;font-size:1rem;font-weight:700}
+.goal-meta{font-size:12px;color:var(--text3);margin-top:1px}
+.goal-progress-wrap{margin-bottom:8px}
+.goal-progress-bar{height:10px;background:var(--surface2);border-radius:99px;overflow:hidden;margin:6px 0}
+.goal-progress-fill{height:100%;border-radius:99px;transition:width 0.8s ease}
+.goal-progress-row{display:flex;justify-content:space-between;font-size:12px;font-weight:600}
+.goal-saved{color:var(--green-dark)}
+.goal-target{color:var(--text3)}
+.goal-add-btn{width:100%;background:var(--green-light);color:var(--green-dark);border:2px solid var(--green);font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;padding:9px;border-radius:10px;cursor:pointer;transition:all 0.15s}
+.goal-add-btn:hover{background:var(--green);color:#fff}
+.add-goal-form{background:var(--surface);border-radius:var(--radius);padding:1.25rem;box-shadow:var(--shadow)}
+.add-goal-form h3{font-family:'Baloo 2',sans-serif;font-size:1rem;font-weight:700;margin-bottom:1rem}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.form-field{display:flex;flex-direction:column;gap:4px}
+.form-field.full{grid-column:1/-1}
+.form-field label{font-size:12px;font-weight:600;color:var(--text2)}
+.form-field input,.form-field select{font-family:'Nunito',sans-serif;font-size:14px;color:var(--text);background:var(--bg);border:1.5px solid var(--border2);border-radius:10px;padding:9px 12px;outline:none;transition:border-color 0.15s}
+.form-field input:focus,.form-field select:focus{border-color:var(--orange)}
+.goal-submit{background:var(--orange);color:#fff;border:none;font-family:'Baloo 2',sans-serif;font-size:14px;font-weight:700;padding:11px 24px;border-radius:var(--radius-pill);cursor:pointer;margin-top:4px;transition:opacity 0.15s}
+.goal-submit:hover{opacity:0.9}
+
+/* SCHEMES */
+.schemes-list{display:flex;flex-direction:column;gap:10px}
+.scheme-card{background:var(--surface);border-radius:var(--radius);padding:1.25rem;box-shadow:var(--shadow);cursor:pointer;transition:all 0.15s}
+.scheme-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.1)}
+.scheme-header{display:flex;align-items:flex-start;gap:12px}
+.scheme-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.scheme-name{font-family:'Baloo 2',sans-serif;font-size:0.95rem;font-weight:700;color:var(--text)}
+.scheme-ministry{font-size:11px;color:var(--text3);margin-top:2px}
+.scheme-desc{font-size:13px;color:var(--text2);line-height:1.55;margin-top:8px;font-weight:500}
+.scheme-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.scheme-tag{font-size:11px;font-weight:600;padding:3px 10px;border-radius:var(--radius-pill)}
+.scheme-tag.who{background:var(--blue-light);color:var(--blue-dark)}
+.scheme-tag.benefit{background:var(--green-light);color:var(--green-dark)}
+.scheme-tag.amount{background:var(--yellow-light);color:var(--yellow-dark)}
+.scheme-apply{display:inline-flex;align-items:center;gap:5px;margin-top:10px;font-size:12px;font-weight:700;color:var(--orange);text-decoration:none}
+.schemes-filter{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:1rem}
+.sf-btn{font-size:12px;font-weight:600;padding:6px 14px;border-radius:var(--radius-pill);border:1.5px solid var(--border2);background:transparent;color:var(--text2);cursor:pointer;transition:all 0.15s}
+.sf-btn:hover,.sf-btn.active{background:var(--orange);color:#fff;border-color:transparent}
+
+/* BUDGET SETUP */
+.budget-setup{background:var(--surface);border-radius:var(--radius);padding:1.25rem;margin-bottom:1.25rem;box-shadow:var(--shadow)}
+.budget-setup h3{font-family:'Baloo 2',sans-serif;font-size:1rem;font-weight:700;margin-bottom:0.85rem}
+.budget-input-row{display:flex;gap:8px;align-items:center}
+.budget-input-row input{flex:1;border:2px solid var(--border2);border-radius:10px;padding:10px 14px;font-family:'Nunito',sans-serif;font-size:15px;color:var(--text);background:var(--bg);outline:none;transition:border-color 0.15s}
+.budget-input-row input:focus{border-color:var(--orange)}
+.budget-save-btn{background:var(--orange);color:#fff;border:none;font-family:'Baloo 2',sans-serif;font-size:13px;font-weight:700;padding:10px 18px;border-radius:10px;cursor:pointer;white-space:nowrap}
+
+/* TOAST */
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(60px);background:var(--text);color:#fff;font-size:13px;font-weight:600;padding:11px 20px;border-radius:var(--radius-pill);box-shadow:0 8px 24px rgba(0,0,0,0.2);opacity:0;transition:all 0.3s ease;z-index:999;white-space:nowrap;max-width:90vw;text-align:center}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+
+/* SEC HEADERS */
+.sec-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.85rem}
+.sec-title{font-family:'Baloo 2',sans-serif;font-size:1.05rem;font-weight:700}
+.sec-action{font-size:12px;font-weight:600;color:var(--orange);background:none;border:none;cursor:pointer}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.fade-up{animation:fadeUp 0.4s ease both}
+
+/* DAILY WARNING BANNER */
+.daily-warning{background:var(--red-light);border:1.5px solid var(--red);border-radius:var(--radius-sm);padding:10px 14px;margin-bottom:1rem;font-size:13px;font-weight:600;color:var(--red-dark);display:none;align-items:center;gap:8px}
+.daily-warning.show{display:flex}
+.daily-ok{background:var(--green-light);border-color:var(--green);color:var(--green-dark)}
+
+/* MEMBER PILLS */
+.member-row{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:10px}
+.member-pill{font-size:12px;font-weight:700;padding:5px 14px;border-radius:var(--radius-pill);border:1.5px solid var(--border2);background:var(--surface);color:var(--text2);cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:5px}
+.member-pill.active{background:var(--orange);color:#fff;border-color:transparent}
+.member-avatar{width:20px;height:20px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11px;background:rgba(255,255,255,0.3)}
+
+/* REPORT CARD */
+.report-card{background:var(--surface);border-radius:var(--radius);padding:1.25rem;box-shadow:var(--shadow);margin-bottom:1rem}
+.report-grade{font-family:'Baloo 2',sans-serif;font-size:3rem;font-weight:800;text-align:center;margin:0.5rem 0}
+.report-insight{background:var(--surface2);border-radius:var(--radius-sm);padding:10px 14px;font-size:13px;color:var(--text2);line-height:1.6;margin-top:8px}
+.report-insight strong{color:var(--text)}
+.share-btn{width:100%;background:var(--green);color:#fff;border:none;font-family:'Baloo 2',sans-serif;font-size:14px;font-weight:700;padding:12px;border-radius:var(--radius-pill);cursor:pointer;margin-top:10px;transition:opacity 0.15s;display:flex;align-items:center;justify-content:center;gap:8px}
+.share-btn:hover{opacity:0.9}
+
+/* BILL REMINDERS */
+.bill-item{background:var(--surface);border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 8px rgba(0,0,0,0.05);margin-bottom:8px}
+.bill-days{font-family:'Baloo 2',sans-serif;font-size:1.1rem;font-weight:800;min-width:36px;text-align:center}
+.bill-days.urgent{color:var(--red)}
+.bill-days.soon{color:var(--yellow-dark)}
+.bill-days.ok{color:var(--green-dark)}
+.bill-info{flex:1}
+.bill-name{font-size:14px;font-weight:700}
+.bill-meta{font-size:11px;color:var(--text3);margin-top:1px}
+.bill-amt{font-family:'Baloo 2',sans-serif;font-size:1rem;font-weight:800;color:var(--orange)}
+.bill-del{background:none;border:none;font-size:15px;cursor:pointer;color:var(--text3);opacity:0.5}
+.bill-del:hover{opacity:1;color:var(--red)}
+
+/* DEBT TRACKER */
+.debt-item{background:var(--surface);border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 8px rgba(0,0,0,0.05);margin-bottom:8px}
+.debt-type{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.debt-info{flex:1}
+.debt-name{font-size:14px;font-weight:700}
+.debt-meta{font-size:11px;color:var(--text3);margin-top:1px}
+.debt-amt-owe{font-family:'Baloo 2',sans-serif;font-size:1rem;font-weight:800;color:var(--red)}
+.debt-amt-lent{font-family:'Baloo 2',sans-serif;font-size:1rem;font-weight:800;color:var(--green-dark)}
+.debt-settle{background:none;border:1.5px solid var(--green);color:var(--green-dark);font-size:11px;font-weight:700;padding:4px 10px;border-radius:var(--radius-pill);cursor:pointer;transition:all 0.15s}
+.debt-settle:hover{background:var(--green);color:#fff}
+
+/* FESTIVAL PLANNER */
+.festival-card{background:var(--surface);border-radius:var(--radius);padding:1.25rem;box-shadow:var(--shadow);margin-bottom:10px}
+.festival-header{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.festival-icon{font-size:1.8rem}
+.festival-name{font-family:'Baloo 2',sans-serif;font-size:1rem;font-weight:700}
+.festival-date{font-size:11px;color:var(--text3)}
+.festival-items{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
+.festival-item-row{display:flex;align-items:center;gap:8px;font-size:13px}
+.festival-item-row input[type=checkbox]{accent-color:var(--orange);width:16px;height:16px}
+.festival-item-label{flex:1;color:var(--text2)}
+.festival-item-amt{font-weight:700;color:var(--text)}
+.festival-total{display:flex;justify-content:space-between;font-size:13px;font-weight:700;padding-top:8px;border-top:1px solid var(--border)}
+
+/* SCHEME CHECKER */
+.checker-step{background:var(--surface);border-radius:var(--radius);padding:1.25rem;box-shadow:var(--shadow)}
+.checker-q{font-family:'Baloo 2',sans-serif;font-size:1rem;font-weight:700;margin-bottom:1rem}
+.checker-options{display:flex;flex-direction:column;gap:8px}
+.checker-opt{background:var(--bg);border:1.5px solid var(--border2);border-radius:10px;padding:11px 14px;font-size:14px;font-weight:500;cursor:pointer;transition:all 0.15s;text-align:left}
+.checker-opt:hover{border-color:var(--orange);background:var(--orange-light)}
+.checker-opt.selected{border-color:var(--orange);background:var(--orange-light);color:var(--orange-dark);font-weight:700}
+.checker-progress{display:flex;gap:6px;margin-bottom:1.25rem}
+.checker-dot{width:8px;height:8px;border-radius:50%;background:var(--border2);transition:background 0.2s}
+.checker-dot.done{background:var(--orange)}
+.eligible-card{background:var(--green-light);border:1.5px solid var(--green);border-radius:var(--radius);padding:1.1rem;margin-bottom:8px}
+.eligible-name{font-family:'Baloo 2',sans-serif;font-size:0.95rem;font-weight:700;color:var(--green-dark)}
+.eligible-benefit{font-size:13px;color:var(--green-dark);margin-top:3px}
+
+/* ===================== GPAY IMPORT TAB ===================== */
+.import-section{background:var(--surface);border-radius:var(--radius);padding:1.25rem;margin-bottom:1.25rem;box-shadow:var(--shadow)}
+.import-section h3{font-family:'Baloo 2',sans-serif;font-size:1rem;font-weight:700;margin-bottom:0.85rem}
+.drop-zone{border:2px dashed var(--border2);border-radius:var(--radius-sm);padding:2rem 1rem;text-align:center;cursor:pointer;transition:all 0.2s;background:var(--bg)}
+.drop-zone:hover,.drop-zone.drag{border-color:var(--orange);background:var(--orange-light)}
+.drop-zone input[type=file]{display:none}
+.drop-icon{font-size:2.5rem;margin-bottom:0.5rem}
+.drop-label{font-size:13px;color:var(--text2);line-height:1.6}
+.drop-label b{color:var(--text);font-weight:700}
+.gpay-steps{background:var(--blue-light);border-radius:var(--radius-sm);padding:12px 14px;margin-top:10px;font-size:12px;color:var(--blue-dark);line-height:1.8}
+.gpay-steps b{font-weight:700}
+.txn-preview{background:var(--surface);border-radius:var(--radius);padding:1.25rem;margin-bottom:1.25rem;box-shadow:var(--shadow)}
+.txn-preview h3{font-family:'Baloo 2',sans-serif;font-size:1rem;font-weight:700;margin-bottom:0.85rem;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.badge{font-size:11px;font-weight:700;padding:3px 10px;border-radius:var(--radius-pill);background:var(--green-light);color:var(--green-dark)}
+.badge-warn{background:var(--yellow-light);color:var(--yellow-dark)}
+.badge-info{background:var(--blue-light);color:var(--blue-dark)}
+.import-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:1rem}
+.import-stat{background:var(--bg);border-radius:var(--radius-sm);padding:10px;text-align:center}
+.import-stat-val{font-family:'Baloo 2',sans-serif;font-size:1.2rem;font-weight:800}
+.import-stat-lbl{font-size:10px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-top:2px}
+.txn-table{width:100%;border-collapse:collapse;font-size:12px}
+.txn-table th{text-align:left;color:var(--text3);font-weight:700;padding:6px 8px;border-bottom:1px solid var(--border);font-size:11px;text-transform:uppercase}
+.txn-table td{padding:8px 8px;border-bottom:1px solid var(--border);vertical-align:middle}
+.txn-table tr:last-child td{border-bottom:none}
+.txn-table tr:hover td{background:var(--bg)}
+.cat-pill{font-size:10px;font-weight:700;padding:2px 8px;border-radius:99px;display:inline-block;white-space:nowrap}
+.cp-food{background:#FFF0EB;color:#CC4E1A}
+.cp-transport{background:#EAF4FB;color:#1A6FA0}
+.cp-medical{background:#FDEDEC;color:#A93226}
+.cp-school{background:#F5EEF8;color:#6C3483}
+.cp-electricity{background:#FEFAE0;color:#9A7D0A}
+.cp-rent{background:#E8FAF0;color:#1A8A4A}
+.cp-other{background:var(--surface2);color:var(--text2)}
+.import-all-btn{width:100%;background:var(--orange);color:#fff;border:none;font-family:'Baloo 2',sans-serif;font-size:15px;font-weight:700;padding:13px;border-radius:12px;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:1rem}
+.import-all-btn:hover{opacity:0.9}
+.import-select-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;font-size:12px;color:var(--text2)}
+.select-all-btn{font-size:12px;font-weight:600;color:var(--orange);background:none;border:none;cursor:pointer}
+.txn-checkbox{accent-color:var(--orange);width:15px;height:15px;cursor:pointer}
+.dup-badge{font-size:10px;background:var(--surface2);color:var(--text3);padding:1px 6px;border-radius:4px;margin-left:4px}
+.import-done-card{background:var(--green-light);border:1.5px solid var(--green);border-radius:var(--radius);padding:1.5rem;text-align:center;box-shadow:var(--shadow)}
+.import-done-icon{font-size:2.5rem;margin-bottom:8px}
+.import-done-title{font-family:'Baloo 2',sans-serif;font-size:1.2rem;font-weight:800;color:var(--green-dark)}
+.import-done-sub{font-size:13px;color:var(--green-dark);margin-top:4px}
+.import-again-btn{background:var(--surface);color:var(--text2);border:1.5px solid var(--border2);font-family:'Baloo 2',sans-serif;font-size:13px;font-weight:700;padding:9px 20px;border-radius:var(--radius-pill);cursor:pointer;margin-top:12px;transition:all 0.15s}
+.import-again-btn:hover{border-color:var(--orange);color:var(--orange)}
+
+/* ===================== NOTIFICATIONS TAB ===================== */
+.notif-section{background:var(--surface);border-radius:var(--radius);padding:1.25rem;margin-bottom:1.25rem;box-shadow:var(--shadow)}
+.notif-section h3{font-family:'Baloo 2',sans-serif;font-size:1rem;font-weight:700;margin-bottom:1rem}
+.notif-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
+.notif-row:last-of-type{border-bottom:none}
+.notif-icon{font-size:1.5rem;width:36px;text-align:center;flex-shrink:0}
+.notif-info{flex:1}
+.notif-label{font-size:14px;font-weight:700;color:var(--text)}
+.notif-sub{font-size:12px;color:var(--text3);margin-top:2px;line-height:1.4}
+.toggle-wrap{position:relative;width:44px;height:24px;flex-shrink:0}
+.toggle-wrap input{opacity:0;width:0;height:0;position:absolute}
+.toggle-slider{position:absolute;inset:0;background:var(--border2);border-radius:99px;cursor:pointer;transition:0.3s}
+.toggle-slider::before{content:'';position:absolute;width:18px;height:18px;left:3px;top:3px;background:#fff;border-radius:50%;transition:0.3s;box-shadow:0 1px 4px rgba(0,0,0,0.2)}
+.toggle-wrap input:checked+.toggle-slider{background:var(--orange)}
+.toggle-wrap input:checked+.toggle-slider::before{transform:translateX(20px)}
+.notif-enable-btn{width:100%;background:var(--orange);color:#fff;border:none;font-family:'Baloo 2',sans-serif;font-size:15px;font-weight:700;padding:13px;border-radius:12px;cursor:pointer;transition:all 0.15s;margin-top:4px}
+.notif-enable-btn:hover{opacity:0.9}
+.notif-status{border-radius:var(--radius-sm);padding:10px 14px;font-size:13px;font-weight:600;margin-top:10px;display:none}
+.notif-status.success{background:var(--green-light);color:var(--green-dark);display:block}
+.notif-status.error{background:var(--red-light);color:var(--red-dark);display:block}
+.notif-status.info{background:var(--blue-light);color:var(--blue-dark);display:block}
+.time-picker-row{display:flex;align-items:center;gap:10px;padding:10px 0;margin-top:4px}
+.time-picker-row label{font-size:13px;font-weight:600;color:var(--text2);flex:1}
+.time-picker-row input[type=time]{font-family:'Nunito',sans-serif;font-size:14px;color:var(--text);background:var(--bg);border:1.5px solid var(--border2);border-radius:8px;padding:7px 12px;outline:none}
+.time-picker-row input[type=time]:focus{border-color:var(--orange)}
+.notif-preview-card{background:var(--surface2);border-radius:var(--radius-sm);padding:12px 14px;margin-top:1rem}
+.notif-preview-card .np-app{font-size:11px;color:var(--text3);margin-bottom:4px;display:flex;align-items:center;gap:4px}
+.notif-preview-card .np-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:2px}
+.notif-preview-card .np-body{font-size:13px;color:var(--text2)}
+.notif-log{background:var(--surface);border-radius:var(--radius);padding:1.25rem;box-shadow:var(--shadow)}
+.notif-log h3{font-family:'Baloo 2',sans-serif;font-size:1rem;font-weight:700;margin-bottom:0.85rem}
+.notif-log-item{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px}
+.notif-log-item:last-child{border-bottom:none}
+.notif-log-time{color:var(--text3);font-size:11px;white-space:nowrap;margin-top:1px;min-width:50px}
+.notif-log-msg{color:var(--text2);line-height:1.4}
+
+@media(max-width:380px){
+  .balance-amount{font-size:2.6rem}
+  .summary-grid{grid-template-columns:1fr}
+  .form-row{grid-template-columns:1fr}
+  .import-stats{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">🏠 GharKharcha<span>Family Budget Tracker</span></div>
+  <div class="nav-month" id="navMonth"></div>
+</nav>
+
+<!-- BALANCE HERO -->
+<div class="balance-hero">
+  <div class="balance-label">Money Left This Month</div>
+  <div class="balance-amount" id="balanceAmt">₹0</div>
+  <div class="balance-sub" id="balanceSub">Set your monthly budget to get started</div>
+  <div class="balance-pills">
+    <div class="balance-pill spent">Spent: <span id="heroSpent">₹0</span></div>
+    <div class="balance-pill saved">Budget: <span id="heroBudget">₹0</span></div>
+  </div>
+  <div class="budget-progress"><div class="budget-progress-fill" id="progressFill" style="width:0%"></div></div>
+</div>
+
+<!-- TABS -->
+<div class="tabs" id="mainTabs">
+  <button class="tab active" onclick="switchTab('track')"><span class="tab-icon">📝</span>Track</button>
+  <button class="tab" onclick="switchTab('import')"><span class="tab-icon">📲</span>Import</button>
+  <button class="tab" onclick="switchTab('summary')"><span class="tab-icon">📊</span>Report</button>
+  <button class="tab" onclick="switchTab('goals')"><span class="tab-icon">🎯</span>Goals</button>
+  <button class="tab" onclick="switchTab('bills')"><span class="tab-icon">🔔</span>Bills</button>
+  <button class="tab" onclick="switchTab('debts')"><span class="tab-icon">🤝</span>Debts</button>
+  <button class="tab" onclick="switchTab('festival')"><span class="tab-icon">🎉</span>Festival</button>
+  <button class="tab" onclick="switchTab('schemes')"><span class="tab-icon">🏛️</span>Schemes</button>
+  <button class="tab" onclick="switchTab('notif')"><span class="tab-icon">🛎️</span>Alerts</button>
+</div>
+
+<!-- TRACK TAB -->
+<div class="tab-content active" id="tab-track">
+  <div class="daily-warning" id="dailyWarning">⚠️ <span id="dailyWarningText"></span></div>
+  <div class="budget-setup" style="margin-bottom:1rem">
+    <h3>👨‍👩‍👧 Who is spending?</h3>
+    <div class="member-row" id="memberRow"></div>
+    <div style="display:flex;gap:8px;margin-top:6px">
+      <input id="memberNameInput" type="text" placeholder="Add member name..." style="flex:1;border:1.5px solid var(--border2);border-radius:10px;padding:8px 12px;font-family:'Nunito',sans-serif;font-size:14px;background:var(--bg);outline:none;color:var(--text)"/>
+      <button onclick="addMember()" style="background:var(--orange);color:#fff;border:none;padding:8px 14px;border-radius:10px;font-family:'Baloo 2',sans-serif;font-weight:700;font-size:13px;cursor:pointer">Add</button>
+    </div>
+  </div>
+  <div class="budget-setup">
+    <h3>💰 Monthly Budget</h3>
+    <div class="budget-input-row">
+      <input type="number" id="budgetInput" placeholder="Enter monthly income e.g. 15000" />
+      <button class="budget-save-btn" onclick="saveBudget()">Set →</button>
+    </div>
+  </div>
+  <div class="voice-section">
+    <div class="voice-label">🎙️ Add an Expense</div>
+    <div class="voice-row">
+      <input class="voice-input" id="expenseInput" type="text" placeholder='Type or say: "Vegetables 80" or "School fees 500"' />
+      <button class="voice-btn" id="voiceBtn" onclick="toggleVoice()" title="Tap to speak">🎤</button>
+    </div>
+    <div class="voice-hint">Try: <span>Ration 500</span> <span>Medicine 200</span> <span>Auto 50</span> <span>School 800</span></div>
+    <div class="cat-row" id="catRow">
+      <span class="cat-quick selected" data-cat="Food" onclick="pickCat(this)">🍚 Food</span>
+      <span class="cat-quick" data-cat="Transport" onclick="pickCat(this)">🚌 Transport</span>
+      <span class="cat-quick" data-cat="School" onclick="pickCat(this)">📚 School</span>
+      <span class="cat-quick" data-cat="Medical" onclick="pickCat(this)">💊 Medical</span>
+      <span class="cat-quick" data-cat="Electricity" onclick="pickCat(this)">💡 Electricity</span>
+      <span class="cat-quick" data-cat="Rent" onclick="pickCat(this)">🏠 Rent</span>
+      <span class="cat-quick" data-cat="Temple" onclick="pickCat(this)">🙏 Temple</span>
+      <span class="cat-quick" data-cat="Clothes" onclick="pickCat(this)">👗 Clothes</span>
+      <span class="cat-quick" data-cat="Other" onclick="pickCat(this)">📦 Other</span>
+    </div>
+    <button class="add-btn" onclick="addExpense()">+ Add Expense</button>
+  </div>
+  <div class="sec-header">
+    <div class="sec-title">Today's Expenses</div>
+    <button class="sec-action" onclick="clearToday()">Clear today</button>
+  </div>
+  <div class="expense-list" id="expenseList">
+    <div class="empty-state"><div class="empty-icon">🧾</div><p>No expenses yet today.<br>Add your first expense above!</p></div>
+  </div>
+</div>
+
+<!-- ===================== GPAY IMPORT TAB ===================== -->
+<div class="tab-content" id="tab-import">
+  <div id="importUploadSection">
+    <div class="import-section">
+      <h3>📲 Import from Google Pay CSV</h3>
+      <div class="drop-zone" id="dropZone"
+        onclick="document.getElementById('csvFileInput').click()"
+        ondragover="handleDragOver(event)"
+        ondragleave="handleDragLeave(event)"
+        ondrop="handleDrop(event)">
+        <input type="file" id="csvFileInput" accept=".csv,.CSV" onchange="handleFileSelect(event)">
+        <div class="drop-icon">📄</div>
+        <div class="drop-label"><b>Tap to choose GPay CSV file</b><br>or drag and drop here</div>
+      </div>
+      <div class="gpay-steps">
+        <b>How to get your GPay CSV:</b><br>
+        📱 <b>On phone:</b> GPay app → Profile icon → Manage Google Account → Data &amp; privacy → Download your data → Google Pay → Request export<br>
+        💻 <b>On browser:</b> pay.google.com → Activity → top-right menu → Export transactions → CSV<br>
+        📧 Google will email you a download link within a few minutes.
+      </div>
+      <button class="import-all-btn" style="background:var(--blue);margin-top:10px" onclick="loadSampleGPay()">
+        👀 Preview with Sample Data
+      </button>
+    </div>
+    <!-- Month selector -->
+    <div class="import-section">
+      <h3>📅 Import for which month?</h3>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <div class="form-field" style="flex:1">
+          <label>Month</label>
+          <select id="importMonth" style="font-family:'Nunito',sans-serif;font-size:14px;color:var(--text);background:var(--bg);border:1.5px solid var(--border2);border-radius:10px;padding:9px 12px;outline:none">
+            <option value="0">January</option><option value="1">February</option><option value="2">March</option>
+            <option value="3">April</option><option value="4">May</option><option value="5">June</option>
+            <option value="6">July</option><option value="7">August</option><option value="8">September</option>
+            <option value="9">October</option><option value="10">November</option><option value="11">December</option>
+          </select>
+        </div>
+        <div class="form-field" style="flex:1">
+          <label>Year</label>
+          <input type="number" id="importYear" value="2024" min="2020" max="2030" style="font-family:'Nunito',sans-serif;font-size:14px;color:var(--text);background:var(--bg);border:1.5px solid var(--border2);border-radius:10px;padding:9px 12px;outline:none"/>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PARSED TRANSACTIONS PREVIEW -->
+  <div class="txn-preview" id="txnPreviewSection" style="display:none">
+    <h3>
+      Parsed Transactions
+      <span class="badge" id="txnFoundBadge">0 found</span>
+      <span class="badge badge-warn" id="txnSkipBadge" style="display:none"></span>
+      <span class="badge badge-info" id="txnDupBadge" style="display:none"></span>
+    </h3>
+    <div class="import-stats">
+      <div class="import-stat">
+        <div class="import-stat-val" id="statTotalDebit" style="color:var(--red)">₹0</div>
+        <div class="import-stat-lbl">Total Debit</div>
+      </div>
+      <div class="import-stat">
+        <div class="import-stat-val" id="statTxnCount" style="color:var(--blue)">0</div>
+        <div class="import-stat-lbl">Transactions</div>
+      </div>
+      <div class="import-stat">
+        <div class="import-stat-val" id="statDupCount" style="color:var(--text3)">0</div>
+        <div class="import-stat-lbl">Duplicates</div>
+      </div>
+    </div>
+    <div class="import-select-row">
+      <span id="selectedCountLabel">All selected</span>
+      <button class="select-all-btn" onclick="toggleSelectAll()">Deselect All</button>
+    </div>
+    <div style="overflow-x:auto">
+      <table class="txn-table">
+        <thead>
+          <tr>
+            <th style="width:20px"></th>
+            <th>Date</th>
+            <th>Description</th>
+            <th>Category</th>
+            <th>Amount</th>
+          </tr>
+        </thead>
+        <tbody id="txnTableBody"></tbody>
+      </table>
+    </div>
+    <button class="import-all-btn" onclick="confirmImport()">
+      ✅ Import Selected Transactions
+    </button>
+    <button style="width:100%;margin-top:8px;background:none;border:1.5px solid var(--border2);border-radius:12px;padding:11px;font-family:'Baloo 2',sans-serif;font-size:13px;font-weight:700;color:var(--text2);cursor:pointer" onclick="resetImport()">
+      ← Upload Different File
+    </button>
+  </div>
+
+  <!-- IMPORT DONE -->
+  <div class="import-done-card" id="importDoneSection" style="display:none">
+    <div class="import-done-icon">🎉</div>
+    <div class="import-done-title" id="importDoneTitle">Import Complete!</div>
+    <div class="import-done-sub" id="importDoneSub"></div>
+    <button class="import-again-btn" onclick="resetImport()">Import Another File</button>
+  </div>
+
+  <!-- IMPORT HISTORY -->
+  <div class="import-section" style="margin-top:0" id="importHistorySection">
+    <h3>📋 Import History</h3>
+    <div id="importHistoryList">
+      <div style="color:var(--text3);font-size:13px;text-align:center;padding:1rem">No imports yet this month</div>
+    </div>
+  </div>
+</div>
+
+<!-- SUMMARY / REPORT TAB -->
+<div class="tab-content" id="tab-summary">
+  <div class="report-card">
+    <div style="text-align:center;margin-bottom:4px;font-size:13px;color:var(--text3);font-weight:600">This Month's Report Card</div>
+    <div class="report-grade" id="reportGrade">—</div>
+    <div style="text-align:center;font-family:'Baloo 2',sans-serif;font-size:1rem;font-weight:700" id="reportTitle">Add expenses to get your report</div>
+    <div class="report-insight" id="reportInsight">Your spending analysis will appear here once you start tracking.</div>
+    <button class="share-btn" onclick="shareReport()">📤 Share Monthly Report on WhatsApp</button>
+  </div>
+  <div class="summary-grid">
+    <div class="summary-card"><div class="s-icon">💸</div><div class="s-label">Total Spent</div><div class="s-val" id="sumSpent" style="color:var(--red)">₹0</div></div>
+    <div class="summary-card"><div class="s-icon">💰</div><div class="s-label">Remaining</div><div class="s-val" id="sumLeft" style="color:var(--green-dark)">₹0</div></div>
+    <div class="summary-card"><div class="s-icon">📅</div><div class="s-label">Daily Average</div><div class="s-val" id="sumDaily" style="color:var(--blue-dark)">₹0</div></div>
+    <div class="summary-card"><div class="s-icon">📈</div><div class="s-label">Transactions</div><div class="s-val" id="sumCount" style="color:var(--purple)">0</div></div>
+  </div>
+  <div class="cat-breakdown">
+    <h3>Where is the money going?</h3>
+    <div id="catBreakdown"><div style="color:var(--text3);font-size:14px;text-align:center;padding:1rem">Add expenses to see breakdown</div></div>
+  </div>
+  <div class="cat-breakdown" style="margin-top:1rem">
+    <h3>Who spent how much?</h3>
+    <div id="memberBreakdown"><div style="color:var(--text3);font-size:14px;text-align:center;padding:1rem">Add family members to see their spending</div></div>
+  </div>
+</div>
+
+<!-- BILLS TAB -->
+<div class="tab-content" id="tab-bills">
+  <div class="budget-setup">
+    <h3>🔔 Add Bill Reminder</h3>
+    <div class="form-row">
+      <div class="form-field"><label>Bill Name</label>
+        <select id="billName" style="font-family:'Nunito',sans-serif;font-size:14px;color:var(--text);background:var(--bg);border:1.5px solid var(--border2);border-radius:10px;padding:9px 12px;outline:none">
+          <option>💡 Electricity Bill</option><option>🏠 Rent / Kiraya</option><option>📱 Mobile Recharge</option>
+          <option>🌊 Water Bill</option><option>📺 DTH / Cable</option><option>🏫 School Fees</option>
+          <option>🏦 EMI / Loan</option><option>🌐 Internet Bill</option><option>💊 Medicine Subscription</option><option>📦 Other</option>
+        </select>
+      </div>
+      <div class="form-field"><label>Amount (₹)</label><input type="number" id="billAmt" placeholder="e.g. 500"/></div>
+      <div class="form-field"><label>Due Date (day of month)</label><input type="number" id="billDay" placeholder="e.g. 10" min="1" max="31"/></div>
+    </div>
+    <button class="goal-submit" onclick="addBill()">+ Add Reminder</button>
+  </div>
+  <div class="sec-header" style="margin-top:1.25rem"><div class="sec-title">Upcoming Bills</div></div>
+  <div id="billsList"><div class="empty-state"><div class="empty-icon">🔔</div><p>No bill reminders yet.<br>Add your recurring bills above!</p></div></div>
+</div>
+
+<!-- DEBTS TAB -->
+<div class="tab-content" id="tab-debts">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1.25rem">
+    <div class="summary-card"><div class="s-icon">😟</div><div class="s-label">I Owe</div><div class="s-val" id="totalOwe" style="color:var(--red)">₹0</div></div>
+    <div class="summary-card"><div class="s-icon">😊</div><div class="s-label">Owed to Me</div><div class="s-val" id="totalLent" style="color:var(--green-dark)">₹0</div></div>
+  </div>
+  <div class="budget-setup">
+    <h3>🤝 Add Debt / Borrowed Money</h3>
+    <div class="form-row">
+      <div class="form-field"><label>Type</label>
+        <select id="debtType" style="font-family:'Nunito',sans-serif;font-size:14px;color:var(--text);background:var(--bg);border:1.5px solid var(--border2);border-radius:10px;padding:9px 12px;outline:none">
+          <option value="owe">I borrowed from someone</option><option value="lent">Someone borrowed from me</option>
+        </select>
+      </div>
+      <div class="form-field"><label>Person's Name</label><input type="text" id="debtPerson" placeholder="e.g. Ramesh Bhai"/></div>
+      <div class="form-field"><label>Amount (₹)</label><input type="number" id="debtAmt" placeholder="e.g. 500"/></div>
+      <div class="form-field"><label>Reason (optional)</label><input type="text" id="debtReason" placeholder="e.g. Medical emergency"/></div>
+    </div>
+    <button class="goal-submit" onclick="addDebt()">+ Add</button>
+  </div>
+  <div class="sec-header" style="margin-top:1.25rem"><div class="sec-title">Debt List</div></div>
+  <div id="debtsList"><div class="empty-state"><div class="empty-icon">🤝</div><p>No debts recorded.<br>Track who owes you and who you owe!</p></div></div>
+</div>
+
+<!-- FESTIVAL TAB -->
+<div class="tab-content" id="tab-festival">
+  <div style="background:var(--yellow-light);border-radius:var(--radius);padding:1rem;margin-bottom:1.25rem;font-size:13px;color:var(--yellow-dark);font-weight:500;line-height:1.6">
+    🎉 Plan your festival budget in advance so you don't overspend. Tick items as you buy them!
+  </div>
+  <div id="festivalCards"></div>
+  <div class="budget-setup">
+    <h3>➕ Add Custom Festival</h3>
+    <div class="form-row">
+      <div class="form-field"><label>Festival Name</label><input type="text" id="festName" placeholder="e.g. Diwali 2025"/></div>
+      <div class="form-field"><label>Total Budget (₹)</label><input type="number" id="festBudget" placeholder="e.g. 3000"/></div>
+    </div>
+    <button class="goal-submit" onclick="addFestival()">+ Add Festival</button>
+  </div>
+</div>
+
+<!-- SCHEMES TAB -->
+<div class="tab-content" id="tab-schemes">
+  <div class="checker-step" id="checkerSection" style="margin-bottom:1.25rem">
+    <div style="font-family:'Baloo 2',sans-serif;font-size:1rem;font-weight:700;margin-bottom:0.5rem">🎯 Find Schemes You Qualify For</div>
+    <div style="font-size:13px;color:var(--text2);margin-bottom:1rem">Answer 3 quick questions →</div>
+    <div class="checker-progress" id="checkerDots"></div>
+    <div id="checkerContent"></div>
+  </div>
+  <div style="background:var(--blue-light);border-radius:var(--radius);padding:1rem;margin-bottom:1.25rem;font-size:13px;color:var(--blue-dark);font-weight:500;line-height:1.6">
+    🏛️ All real Indian government schemes. Tap any card to learn more.
+  </div>
+  <div class="schemes-filter">
+    <button class="sf-btn active" onclick="filterSchemes('all',this)">All</button>
+    <button class="sf-btn" onclick="filterSchemes('women',this)">Women</button>
+    <button class="sf-btn" onclick="filterSchemes('farmer',this)">Farmers</button>
+    <button class="sf-btn" onclick="filterSchemes('health',this)">Health</button>
+    <button class="sf-btn" onclick="filterSchemes('education',this)">Education</button>
+    <button class="sf-btn" onclick="filterSchemes('housing',this)">Housing</button>
+  </div>
+  <div class="schemes-list" id="schemesList"></div>
+</div>
+
+<!-- GOALS TAB -->
+<div class="tab-content" id="tab-goals">
+  <div class="sec-header"><div class="sec-title">🎯 Savings Goals</div></div>
+  <div class="goals-list" id="goalsList"></div>
+  <div class="add-goal-form">
+    <h3>➕ Add New Goal</h3>
+    <div class="form-row">
+      <div class="form-field full"><label>What are you saving for?</label>
+        <select id="goalType">
+          <option value="🏫 School Fees">🏫 School Fees</option>
+          <option value="🏥 Medical Emergency">🏥 Medical Emergency</option>
+          <option value="🎉 Festival">🎉 Festival (Diwali/Eid/Christmas)</option>
+          <option value="🏠 House Repair">🏠 House Repair</option>
+          <option value="💍 Wedding">💍 Wedding</option>
+          <option value="📱 Phone">📱 New Phone</option>
+          <option value="✈️ Travel">✈️ Family Trip</option>
+          <option value="🌾 Seeds/Farm">🌾 Seeds / Farm</option>
+          <option value="🎓 College">🎓 College Fees</option>
+          <option value="⚡ Appliance">⚡ Home Appliance</option>
+        </select>
+      </div>
+      <div class="form-field"><label>Target Amount (₹)</label><input type="number" id="goalTarget" placeholder="e.g. 5000"/></div>
+      <div class="form-field"><label>Save per Month (₹)</label><input type="number" id="goalMonthly" placeholder="e.g. 500"/></div>
+    </div>
+    <button class="goal-submit" onclick="addGoal()">Add Goal 🎯</button>
+  </div>
+</div>
+
+<!-- ===================== NOTIFICATIONS / ALERTS TAB ===================== -->
+<div class="tab-content" id="tab-notif">
+  <div class="notif-section">
+    <h3>🛎️ Expense Reminders</h3>
+
+    <div class="notif-row">
+      <div class="notif-icon">🧾</div>
+      <div class="notif-info">
+        <div class="notif-label">Daily expense reminder</div>
+        <div class="notif-sub">Notify me if I haven't logged any expense today</div>
+      </div>
+      <label class="toggle-wrap"><input type="checkbox" id="togDaily" checked onchange="saveNotifSettings()"><span class="toggle-slider"></span></label>
+    </div>
+
+    <div class="time-picker-row">
+      <label>Remind me at</label>
+      <input type="time" id="reminderTime" value="20:00" onchange="saveNotifSettings();updateNotifPreview()">
+    </div>
+
+    <div class="notif-row" style="margin-top:4px">
+      <div class="notif-icon">📲</div>
+      <div class="notif-info">
+        <div class="notif-label">Monthly GPay import reminder</div>
+        <div class="notif-sub">Remind on 1st of each month to import transactions</div>
+      </div>
+      <label class="toggle-wrap"><input type="checkbox" id="togImport" checked onchange="saveNotifSettings()"><span class="toggle-slider"></span></label>
+    </div>
+
+    <div class="notif-row">
+      <div class="notif-icon">🔔</div>
+      <div class="notif-info">
+        <div class="notif-label">Bill due alert</div>
+        <div class="notif-sub">3 days before any bill is due</div>
+      </div>
+      <label class="toggle-wrap"><input type="checkbox" id="togBill" checked onchange="saveNotifSettings()"><span class="toggle-slider"></span></label>
+    </div>
+
+    <div class="notif-row">
+      <div class="notif-icon">⚠️</div>
+      <div class="notif-info">
+        <div class="notif-label">Budget 80% warning</div>
+        <div class="notif-sub">Alert when you've spent 80% of monthly budget</div>
+      </div>
+      <label class="toggle-wrap"><input type="checkbox" id="togBudget" checked onchange="saveNotifSettings()"><span class="toggle-slider"></span></label>
+    </div>
+
+    <div class="notif-row">
+      <div class="notif-icon">🎯</div>
+      <div class="notif-info">
+        <div class="notif-label">Weekly savings tip</div>
+        <div class="notif-sub">Every Sunday morning — spending insight + saving tip</div>
+      </div>
+      <label class="toggle-wrap"><input type="checkbox" id="togWeekly" onchange="saveNotifSettings()"><span class="toggle-slider"></span></label>
+    </div>
+
+    <button class="notif-enable-btn" onclick="requestNotifPermission()">🔔 Enable Notifications</button>
+    <div class="notif-status" id="notifStatus"></div>
+
+    <!-- Preview -->
+    <div class="notif-preview-card" id="notifPreviewCard">
+      <div class="np-app">📱 GharKharcha · <span id="previewTime">8:00 PM</span></div>
+      <div class="np-title" id="previewTitle">🧾 Add today's expenses!</div>
+      <div class="np-body" id="previewBody">You haven't logged any expenses today. Tap to add now.</div>
+    </div>
+  </div>
+
+  <!-- Test notification -->
+  <div class="notif-section">
+    <h3>🧪 Test Notifications</h3>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <button onclick="sendTestNotif('daily')" style="background:var(--orange-light);color:var(--orange-dark);border:1.5px solid var(--orange);border-radius:10px;padding:10px 14px;font-family:'Baloo 2',sans-serif;font-size:13px;font-weight:700;cursor:pointer;text-align:left">
+        🧾 Test — Daily expense reminder
+      </button>
+      <button onclick="sendTestNotif('import')" style="background:var(--blue-light);color:var(--blue-dark);border:1.5px solid var(--blue);border-radius:10px;padding:10px 14px;font-family:'Baloo 2',sans-serif;font-size:13px;font-weight:700;cursor:pointer;text-align:left">
+        📲 Test — Monthly import reminder
+      </button>
+      <button onclick="sendTestNotif('bill')" style="background:var(--yellow-light);color:var(--yellow-dark);border:1.5px solid var(--yellow);border-radius:10px;padding:10px 14px;font-family:'Baloo 2',sans-serif;font-size:13px;font-weight:700;cursor:pointer;text-align:left">
+        🔔 Test — Bill due alert
+      </button>
+      <button onclick="sendTestNotif('budget')" style="background:var(--red-light);color:var(--red-dark);border:1.5px solid var(--red);border-radius:10px;padding:10px 14px;font-family:'Baloo 2',sans-serif;font-size:13px;font-weight:700;cursor:pointer;text-align:left">
+        ⚠️ Test — Budget 80% warning
+      </button>
+    </div>
+  </div>
+
+  <!-- Notification log -->
+  <div class="notif-log">
+    <h3>📋 Notification Log</h3>
+    <div id="notifLog">
+      <div style="color:var(--text3);font-size:13px;text-align:center;padding:1rem">No notifications sent yet</div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ── STATE ─────────────────────────────────────────────────────────────────────
+let state = JSON.parse(localStorage.getItem('gharkharcha-v3') || '{"budget":0,"expenses":[],"goals":[],"members":["Papa","Mummy"],"activeMember":"Papa","bills":[],"debts":[],"festivals":[],"importedTxnIds":[],"importHistory":[],"notifLog":[]}');
+let notifSettings = JSON.parse(localStorage.getItem('gharkharcha-notif') || '{"daily":true,"import":true,"bill":true,"budget":true,"weekly":false,"time":"20:00"}');
+let selectedCat = 'Food';
+let recognition = null;
+let parsedTxns = [];
+let allSelected = true;
+let notifCheckInterval = null;
+
+// ── CATEGORIES ─────────────────────────────────────────────────────────────────
+const catConfig = {
+  'Food':        {emoji:'🍚', color:'#FF6B35', bg:'#FFF0EB'},
+  'Transport':   {emoji:'🚌', color:'#3498DB', bg:'#EAF4FB'},
+  'School':      {emoji:'📚', color:'#9B59B6', bg:'#F5EEF8'},
+  'Medical':     {emoji:'💊', color:'#E74C3C', bg:'#FDEDEC'},
+  'Electricity': {emoji:'💡', color:'#F1C40F', bg:'#FEFAE0'},
+  'Rent':        {emoji:'🏠', color:'#2ECC71', bg:'#E8FAF0'},
+  'Temple':      {emoji:'🙏', color:'#E67E22', bg:'#FDF0E3'},
+  'Clothes':     {emoji:'👗', color:'#E91E8C', bg:'#FCE4F1'},
+  'Other':       {emoji:'📦', color:'#7F8C8D', bg:'#F2F3F4'}
+};
+
+function getCatFromName(name) {
+  const n = name.toLowerCase();
+  if (n.match(/sabzi|ration|food|rice|dal|milk|veg|grocery|bigbasket|d-mart|dmart|swiggy|zomato|blinkit|zepto|kirana/)) return 'Food';
+  if (n.match(/auto|bus|train|metro|petrol|transport|rickshaw|ola|uber|rapido|cab/)) return 'Transport';
+  if (n.match(/school|fees|book|tuition|college|coaching|exam/)) return 'School';
+  if (n.match(/medicine|medical|doctor|hospital|pharmacy|apollo|1mg|tablet|clinic|health/)) return 'Medical';
+  if (n.match(/bijli|electric|bescom|torrent|tpddl|bses|msedcl|discom/)) return 'Electricity';
+  if (n.match(/rent|kiraya|house|landlord|flat|pg/)) return 'Rent';
+  if (n.match(/temple|mandir|church|mosque|pooja|puja|masjid/)) return 'Temple';
+  if (n.match(/cloth|dress|shirt|saree|kurta|fashion|myntra|ajio/)) return 'Clothes';
+  return selectedCat || 'Other';
+}
+
+function save() { localStorage.setItem('gharkharcha-v3', JSON.stringify(state)); }
+
+// ── MEMBERS ────────────────────────────────────────────────────────────────────
+const memberEmojis = ['👨','👩','👦','👧','👴','👵','🧑'];
+function addMember() {
+  const name = document.getElementById('memberNameInput').value.trim();
+  if (!name) return;
+  if (state.members.includes(name)) { showToast('Already added!'); return; }
+  state.members.push(name);
+  save(); renderMembers(); showToast(name + ' added ✅');
+  document.getElementById('memberNameInput').value = '';
+}
+function setActiveMember(name) { state.activeMember = name; save(); renderMembers(); }
+function renderMembers() {
+  document.getElementById('memberRow').innerHTML = state.members.map((m, i) =>
+    `<span class="member-pill ${state.activeMember===m?'active':''}" onclick="setActiveMember('${m}')">
+      <span class="member-avatar">${memberEmojis[i%memberEmojis.length]}</span>${m}
+    </span>`).join('');
+}
+
+// ── BUDGET ─────────────────────────────────────────────────────────────────────
+function saveBudget() {
+  const v = parseInt(document.getElementById('budgetInput').value);
+  if (!v || v < 1) { showToast('Please enter a valid amount'); return; }
+  state.budget = v; save(); updateHero();
+  showToast('✅ Budget set to ₹' + v.toLocaleString('en-IN'));
+  document.getElementById('budgetInput').value = '';
+  checkBudgetWarning();
+  checkDailyWarning();
+}
+
+function updateHero() {
+  const spent = state.expenses.reduce((s, e) => s + e.amount, 0);
+  const left = state.budget - spent;
+  const pct = state.budget > 0 ? Math.min(100, Math.round(spent / state.budget * 100)) : 0;
+  document.getElementById('balanceAmt').textContent = '₹' + Math.max(0, left).toLocaleString('en-IN');
+  document.getElementById('balanceSub').textContent = state.budget > 0 ? pct + '% of budget used this month' : 'Set your monthly budget to get started';
+  document.getElementById('heroSpent').textContent = '₹' + spent.toLocaleString('en-IN');
+  document.getElementById('heroBudget').textContent = '₹' + state.budget.toLocaleString('en-IN');
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressFill').style.background = pct > 85 ? '#E74C3C' : pct > 65 ? '#F1C40F' : '#fff';
+  if (state.budget > 0) document.getElementById('budgetInput').placeholder = 'Current: ₹' + state.budget.toLocaleString('en-IN');
+}
+
+// ── DAILY WARNING ──────────────────────────────────────────────────────────────
+function checkDailyWarning() {
+  if (!state.budget) return;
+  const today = new Date().toDateString();
+  const todaySpent = state.expenses.filter(e => new Date(e.id).toDateString() === today).reduce((s, e) => s + e.amount, 0);
+  const daysLeft = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate() - new Date().getDate() + 1;
+  const remaining = state.budget - state.expenses.reduce((s, e) => s + e.amount, 0);
+  const safeDaily = daysLeft > 0 ? Math.round(remaining / daysLeft) : 0;
+  const el = document.getElementById('dailyWarning');
+  if (todaySpent > safeDaily && safeDaily > 0) {
+    el.className = 'daily-warning show';
+    document.getElementById('dailyWarningText').textContent = `Today you spent ₹${todaySpent.toLocaleString('en-IN')}. Safe daily limit is ₹${safeDaily.toLocaleString('en-IN')}. Try to spend less tomorrow!`;
+  } else if (safeDaily > 0) {
+    el.className = 'daily-warning daily-ok show';
+    document.getElementById('dailyWarningText').textContent = `✅ You can safely spend ₹${safeDaily.toLocaleString('en-IN')} per day for rest of month.`;
+  } else { el.className = 'daily-warning'; }
+}
+
+// ── VOICE ──────────────────────────────────────────────────────────────────────
+function toggleVoice() {
+  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) { showToast('Voice not supported. Please type.'); return; }
+  const btn = document.getElementById('voiceBtn');
+  if (recognition) { recognition.stop(); recognition = null; btn.textContent = '🎤'; btn.classList.remove('listening'); return; }
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  recognition = new SR();
+  recognition.lang = 'en-IN'; recognition.continuous = false; recognition.interimResults = false;
+  recognition.onstart = () => { btn.textContent = '⏹'; btn.classList.add('listening'); showToast('🎙️ Listening...'); };
+  recognition.onresult = (e) => { const t = e.results[0][0].transcript; document.getElementById('expenseInput').value = t; showToast('Heard: "' + t + '"'); };
+  recognition.onerror = () => { showToast('Could not hear. Try again.'); };
+  recognition.onend = () => { btn.textContent = '🎤'; btn.classList.remove('listening'); recognition = null; };
+  recognition.start();
+}
+
+// ── EXPENSES ───────────────────────────────────────────────────────────────────
+function pickCat(el) { document.querySelectorAll('.cat-quick').forEach(c => c.classList.remove('selected')); el.classList.add('selected'); selectedCat = el.dataset.cat; }
+function parseInput(text) {
+  const parts = text.trim().split(/\s+/);
+  let amount = 0, name = '';
+  for (let p of parts) { const n = parseFloat(p.replace(/[₹,]/g, '')); if (!isNaN(n) && n > 0) amount = n; else name += (name ? ' ' : '') + p; }
+  return { name: name || 'Expense', amount };
+}
+function addExpense() {
+  const raw = document.getElementById('expenseInput').value.trim();
+  if (!raw) { showToast('Please type or speak an expense first'); return; }
+  const { name, amount } = parseInput(raw);
+  if (!amount) { showToast('Could not find amount. Try "Vegetables 80"'); return; }
+  const cat = getCatFromName(name);
+  const expense = { id: Date.now(), name, amount, cat, member: state.activeMember, time: new Date().toLocaleTimeString('en-IN', {hour:'2-digit', minute:'2-digit'}) };
+  state.expenses.unshift(expense);
+  save(); renderExpenses(); updateHero(); checkDailyWarning(); checkBudgetWarning();
+  document.getElementById('expenseInput').value = '';
+  showToast('₹' + amount + ' added for ' + name + ' ✅');
+}
+function deleteExpense(id) { state.expenses = state.expenses.filter(e => e.id !== id); save(); renderExpenses(); updateHero(); checkDailyWarning(); }
+function clearToday() {
+  if (!state.expenses.length) { showToast('Nothing to clear'); return; }
+  if (!confirm('Clear all expenses?')) return;
+  state.expenses = []; save(); renderExpenses(); updateHero(); checkDailyWarning();
+}
+function renderExpenses() {
+  const el = document.getElementById('expenseList');
+  if (!state.expenses.length) { el.innerHTML = '<div class="empty-state"><div class="empty-icon">🧾</div><p>No expenses yet.<br>Add your first expense above!</p></div>'; return; }
+  el.innerHTML = state.expenses.map(e => {
+    const c = catConfig[e.cat] || catConfig['Other'];
+    return `<div class="expense-item"><div class="expense-emoji" style="background:${c.bg}">${c.emoji}</div><div class="expense-info"><div class="expense-name">${e.name}</div><div class="expense-meta">${e.cat} · ${e.member||''} · ${e.time}</div></div><div class="expense-amount">−₹${e.amount.toLocaleString('en-IN')}</div><button class="expense-del" onclick="deleteExpense(${e.id})">🗑</button></div>`;
+  }).join('');
+}
+
+// ── REPORT ─────────────────────────────────────────────────────────────────────
+function updateSummary() {
+  const total = state.expenses.reduce((s, e) => s + e.amount, 0);
+  const left = Math.max(0, state.budget - total);
+  const days = new Date().getDate();
+  const daily = days > 0 ? Math.round(total / days) : 0;
+  document.getElementById('sumSpent').textContent = '₹' + total.toLocaleString('en-IN');
+  document.getElementById('sumLeft').textContent = '₹' + left.toLocaleString('en-IN');
+  document.getElementById('sumDaily').textContent = '₹' + daily.toLocaleString('en-IN');
+  document.getElementById('sumCount').textContent = state.expenses.length;
+  const pct = state.budget > 0 ? total / state.budget * 100 : 0;
+  let grade, title, color;
+  if (!state.budget) { grade = '?'; title = 'Set budget first'; color = 'var(--text3)'; }
+  else if (pct <= 50) { grade = 'A+'; title = 'Excellent Saving! 🌟'; color = 'var(--green-dark)'; }
+  else if (pct <= 70) { grade = 'A'; title = 'Good job! Keep it up 👍'; color = 'var(--green-dark)'; }
+  else if (pct <= 85) { grade = 'B'; title = 'Getting close to limit ⚠️'; color = 'var(--yellow-dark)'; }
+  else if (pct <= 100) { grade = 'C'; title = 'Almost at limit! Be careful 😟'; color = 'var(--orange-dark)'; }
+  else { grade = 'D'; title = 'Over budget this month 😢'; color = 'var(--red-dark)'; }
+  document.getElementById('reportGrade').textContent = grade;
+  document.getElementById('reportGrade').style.color = color;
+  document.getElementById('reportTitle').textContent = title;
+  const cats = {};
+  state.expenses.forEach(e => { cats[e.cat] = (cats[e.cat] || 0) + e.amount; });
+  const top = Object.entries(cats).sort((a, b) => b[1] - a[1]);
+  let insight = '';
+  if (top.length) {
+    const topCat = top[0], topPct = total > 0 ? Math.round(topCat[1] / total * 100) : 0;
+    insight = `Your biggest expense is <strong>${topCat[0]}</strong> (${topPct}% = ₹${topCat[1].toLocaleString('en-IN')}). `;
+    if (state.budget > 0 && left > 0) insight += `You have <strong>₹${left.toLocaleString('en-IN')}</strong> left. `;
+    if (pct > 80) insight += '<strong>Tip:</strong> Try to reduce spending this week!';
+    else insight += '<strong>Tip:</strong> Great! Consider putting surplus in a savings goal.';
+  } else insight = 'Start adding expenses to get your personalised spending insight!';
+  document.getElementById('reportInsight').innerHTML = insight;
+  const catEl = document.getElementById('catBreakdown');
+  if (!top.length) { catEl.innerHTML = '<div style="color:var(--text3);font-size:14px;text-align:center;padding:1rem">Add expenses to see breakdown</div>'; }
+  else catEl.innerHTML = top.map(([cat, amt]) => { const c = catConfig[cat] || catConfig['Other']; const p = total > 0 ? Math.round(amt / total * 100) : 0; return `<div class="cat-bar-row"><div class="cat-bar-label">${c.emoji} ${cat}</div><div class="cat-bar-wrap"><div class="cat-bar-fill" style="width:${p}%;background:${c.color}"></div></div><div class="cat-bar-amt">₹${amt.toLocaleString('en-IN')}</div></div>`; }).join('');
+  const members = {};
+  state.expenses.forEach(e => { if (e.member) members[e.member] = (members[e.member] || 0) + e.amount; });
+  const mEl = document.getElementById('memberBreakdown');
+  const mEntries = Object.entries(members).sort((a, b) => b[1] - a[1]);
+  if (!mEntries.length) { mEl.innerHTML = '<div style="color:var(--text3);font-size:14px;text-align:center;padding:1rem">Add family members to see their spending</div>'; }
+  else mEl.innerHTML = mEntries.map(([m, amt]) => { const p = total > 0 ? Math.round(amt / total * 100) : 0; return `<div class="cat-bar-row"><div class="cat-bar-label">👤 ${m}</div><div class="cat-bar-wrap"><div class="cat-bar-fill" style="width:${p}%;background:var(--orange)"></div></div><div class="cat-bar-amt">₹${amt.toLocaleString('en-IN')}</div></div>`; }).join('');
+}
+
+function shareReport() {
+  const total = state.expenses.reduce((s, e) => s + e.amount, 0);
+  const left = Math.max(0, state.budget - total);
+  const pct = state.budget > 0 ? Math.round(total / state.budget * 100) : 0;
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const month = months[new Date().getMonth()];
+  const text = `🏠 GharKharcha Report — ${month} ${new Date().getFullYear()}\n\n💸 Spent: ₹${total.toLocaleString('en-IN')}\n💰 Remaining: ₹${left.toLocaleString('en-IN')}\n📊 Budget used: ${pct}%\n\nTracked with GharKharcha 🇮🇳`;
+  if (navigator.share) { navigator.share({ title: 'GharKharcha Monthly Report', text }); }
+  else { navigator.clipboard.writeText(text).then(() => showToast('Report copied! Paste in WhatsApp 📋')).catch(() => showToast('Copy failed — please copy manually')); }
+}
+
+// ── BILLS ──────────────────────────────────────────────────────────────────────
+function addBill() {
+  const name = document.getElementById('billName').value;
+  const amt = parseInt(document.getElementById('billAmt').value);
+  const day = parseInt(document.getElementById('billDay').value);
+  if (!amt || !day || day < 1 || day > 31) { showToast('Please fill all fields'); return; }
+  state.bills.push({ id: Date.now(), name, amt, day });
+  save(); renderBills(); showToast('Bill reminder added 🔔');
+  document.getElementById('billAmt').value = ''; document.getElementById('billDay').value = '';
+}
+function deleteBill(id) { state.bills = state.bills.filter(b => b.id !== id); save(); renderBills(); }
+function renderBills() {
+  const el = document.getElementById('billsList');
+  if (!state.bills.length) { el.innerHTML = '<div class="empty-state"><div class="empty-icon">🔔</div><p>No bill reminders yet.<br>Add your recurring bills above!</p></div>'; return; }
+  const today = new Date().getDate();
+  const sorted = [...state.bills].sort((a, b) => {
+    const da = a.day >= today ? a.day - today : a.day + 31 - today;
+    const db = b.day >= today ? b.day - today : b.day + 31 - today;
+    return da - db;
+  });
+  el.innerHTML = sorted.map(b => {
+    const daysLeft = b.day >= today ? b.day - today : b.day + 31 - today;
+    const cls = daysLeft <= 2 ? 'urgent' : daysLeft <= 7 ? 'soon' : 'ok';
+    const label = daysLeft === 0 ? 'TODAY' : daysLeft === 1 ? 'TOMORROW' : daysLeft + 'd';
+    return `<div class="bill-item"><div class="bill-days ${cls}">${label}</div><div class="bill-info"><div class="bill-name">${b.name}</div><div class="bill-meta">Due on ${b.day}${b.day===1?'st':b.day===2?'nd':b.day===3?'rd':'th'} every month</div></div><div class="bill-amt">₹${b.amt.toLocaleString('en-IN')}</div><button class="bill-del" onclick="deleteBill(${b.id})">🗑</button></div>`;
+  }).join('');
+}
+
+// ── DEBTS ──────────────────────────────────────────────────────────────────────
+function addDebt() {
+  const type = document.getElementById('debtType').value;
+  const person = document.getElementById('debtPerson').value.trim();
+  const amt = parseInt(document.getElementById('debtAmt').value);
+  const reason = document.getElementById('debtReason').value.trim();
+  if (!person || !amt) { showToast('Please fill name and amount'); return; }
+  state.debts.push({ id: Date.now(), type, person, amt, reason, date: new Date().toLocaleDateString('en-IN') });
+  save(); renderDebts(); showToast('Debt recorded ✅');
+  document.getElementById('debtPerson').value = ''; document.getElementById('debtAmt').value = ''; document.getElementById('debtReason').value = '';
+}
+function settleDebt(id) { state.debts = state.debts.filter(d => d.id !== id); save(); renderDebts(); showToast('Debt settled! 🎉'); }
+function renderDebts() {
+  const el = document.getElementById('debtsList');
+  const totalOwe = state.debts.filter(d => d.type === 'owe').reduce((s, d) => s + d.amt, 0);
+  const totalLent = state.debts.filter(d => d.type === 'lent').reduce((s, d) => s + d.amt, 0);
+  document.getElementById('totalOwe').textContent = '₹' + totalOwe.toLocaleString('en-IN');
+  document.getElementById('totalLent').textContent = '₹' + totalLent.toLocaleString('en-IN');
+  if (!state.debts.length) { el.innerHTML = '<div class="empty-state"><div class="empty-icon">🤝</div><p>No debts recorded.</p></div>'; return; }
+  el.innerHTML = state.debts.map(d => `<div class="debt-item"><div class="debt-type" style="background:${d.type==='owe'?'#FDEDEC':'#E8FAF0'}">${d.type==='owe'?'😟':'😊'}</div><div class="debt-info"><div class="debt-name">${d.type==='owe'?'I owe':'Lent to'} ${d.person}</div><div class="debt-meta">${d.reason||'No reason given'} · ${d.date}</div></div><div class="${d.type==='owe'?'debt-amt-owe':'debt-amt-lent'}">₹${d.amt.toLocaleString('en-IN')}</div><button class="debt-settle" onclick="settleDebt(${d.id})">✓ Settled</button></div>`).join('');
+}
+
+// ── FESTIVAL ───────────────────────────────────────────────────────────────────
+const defaultFestivals = [
+  {id:'diwali',name:'🪔 Diwali',budget:3000,items:[{name:'Diyas & Decoration',amt:400,done:false},{name:'Sweets & Mithai',amt:600,done:false},{name:'Clothes for family',amt:1000,done:false},{name:'Puja items',amt:300,done:false},{name:'Crackers',amt:500,done:false},{name:'Gifts for relatives',amt:200,done:false}]},
+  {id:'eid',name:'🌙 Eid',budget:3000,items:[{name:'Seviyan & sweets',amt:400,done:false},{name:'New clothes',amt:1000,done:false},{name:'Eidi for kids',amt:500,done:false},{name:'Mehndi',amt:200,done:false},{name:'Gifts',amt:500,done:false},{name:'Feast cooking',amt:400,done:false}]},
+  {id:'christmas',name:'🎄 Christmas',budget:2000,items:[{name:'Decoration',amt:300,done:false},{name:'Cake & sweets',amt:400,done:false},{name:'Gifts',amt:600,done:false},{name:'Clothes',amt:500,done:false},{name:'Candles & stars',amt:200,done:false}]},
+];
+function initFestivals() { if (!state.festivals.length) { state.festivals = [...defaultFestivals]; save(); } }
+function addFestival() {
+  const name = document.getElementById('festName').value.trim();
+  const budget = parseInt(document.getElementById('festBudget').value);
+  if (!name || !budget) { showToast('Please fill festival name and budget'); return; }
+  state.festivals.push({ id: Date.now(), name, budget, items: [] });
+  save(); renderFestivals(); showToast('Festival added 🎉');
+  document.getElementById('festName').value = ''; document.getElementById('festBudget').value = '';
+}
+function toggleFestItem(fid, idx) {
+  const f = state.festivals.find(x => x.id == fid);
+  if (f) f.items[idx].done = !f.items[idx].done;
+  save(); renderFestivals();
+}
+function renderFestivals() {
+  const el = document.getElementById('festivalCards');
+  el.innerHTML = state.festivals.map(f => {
+    const spent = f.items.filter(i => i.done).reduce((s, i) => s + i.amt, 0);
+    const total = f.items.reduce((s, i) => s + i.amt, 0);
+    const pct = total > 0 ? Math.round(spent / total * 100) : 0;
+    return `<div class="festival-card">
+      <div class="festival-header"><div class="festival-icon">${f.name.split(' ')[0]}</div><div><div class="festival-name">${f.name.substring(f.name.indexOf(' ')+1)}</div><div class="festival-date">Budget: ₹${f.budget.toLocaleString('en-IN')} · ${pct}% purchased</div></div></div>
+      <div style="height:6px;background:var(--surface2);border-radius:99px;overflow:hidden;margin-bottom:10px"><div style="height:100%;width:${pct}%;background:var(--orange);border-radius:99px;transition:width 0.5s"></div></div>
+      <div class="festival-items">${f.items.map((item, idx) => `<div class="festival-item-row"><input type="checkbox" ${item.done?'checked':''} onchange="toggleFestItem('${f.id}',${idx})"/><span class="festival-item-label" style="${item.done?'text-decoration:line-through;color:var(--text3)':''}">${item.name}</span><span class="festival-item-amt">₹${item.amt}</span></div>`).join('')}</div>
+      <div class="festival-total"><span>Purchased: ₹${spent.toLocaleString('en-IN')}</span><span>Remaining: ₹${(f.budget-spent).toLocaleString('en-IN')}</span></div>
+    </div>`;
+  }).join('');
+}
+
+// ── GOALS ──────────────────────────────────────────────────────────────────────
+function addGoal() {
+  const type = document.getElementById('goalType').value;
+  const target = parseInt(document.getElementById('goalTarget').value);
+  const monthly = parseInt(document.getElementById('goalMonthly').value);
+  if (!target || !monthly) { showToast('Please fill target and monthly amount'); return; }
+  const months = Math.ceil(target / monthly);
+  state.goals.push({ id: Date.now(), name: type, target, monthly, saved: 0, months });
+  save(); renderGoals();
+  document.getElementById('goalTarget').value = ''; document.getElementById('goalMonthly').value = '';
+  showToast('Goal added! You got this 💪');
+}
+function addToGoal(id) {
+  const goal = state.goals.find(g => g.id === id); if (!goal) return;
+  const amt = parseInt(prompt('How much adding to "' + goal.name + '"? (₹)'));
+  if (!amt || amt < 1) return;
+  goal.saved = Math.min(goal.target, goal.saved + amt);
+  save(); renderGoals(); showToast('₹' + amt + ' added 🎉');
+  if (goal.saved >= goal.target) showToast('🎊 Goal completed! Amazing!');
+}
+function renderGoals() {
+  const el = document.getElementById('goalsList');
+  if (!state.goals.length) { el.innerHTML = '<div class="empty-state"><div class="empty-icon">🎯</div><p>No goals yet.<br>Add a savings goal below!</p></div>'; return; }
+  const colors = ['#FF6B35','#2ECC71','#3498DB','#9B59B6','#E74C3C','#F1C40F'];
+  el.innerHTML = state.goals.map((g, i) => {
+    const pct = Math.round(g.saved / g.target * 100);
+    const left = g.target - g.saved; const mLeft = Math.ceil(left / g.monthly); const color = colors[i % colors.length];
+    return `<div class="goal-card"><div class="goal-header"><div class="goal-icon" style="background:${color}22">${g.name.split(' ')[0]}</div><div><div class="goal-name">${g.name.substring(g.name.indexOf(' ')+1)}</div><div class="goal-meta">${mLeft>0?'~'+mLeft+' months to go':'Goal reached! 🎊'}</div></div></div><div class="goal-progress-wrap"><div class="goal-progress-row"><span class="goal-saved">₹${g.saved.toLocaleString('en-IN')} saved</span><span class="goal-target">of ₹${g.target.toLocaleString('en-IN')}</span></div><div class="goal-progress-bar"><div class="goal-progress-fill" style="width:${pct}%;background:${color}"></div></div><div style="font-size:11px;color:var(--text3)">${pct}% complete · Save ₹${g.monthly.toLocaleString('en-IN')}/month</div></div><button class="goal-add-btn" onclick="addToGoal(${g.id})">+ Add Savings</button></div>`;
+  }).join('');
+}
+
+// ── SCHEME CHECKER ─────────────────────────────────────────────────────────────
+const checkerQuestions = [
+  {q:'What is your family income per month?',opts:['Under ₹10,000','₹10,000 – ₹25,000','₹25,000 – ₹50,000','Above ₹50,000'],key:'income'},
+  {q:'Who is in your family?',opts:['Pregnant woman / new mother','Farmer / owns agricultural land','Girl child under 18','None of these'],key:'family'},
+  {q:'Where do you live?',opts:['Village / Rural area','Small town','City / Urban area'],key:'location'}
+];
+let checkerAnswers = {}; let checkerStep = 0;
+function renderChecker() {
+  const dots = document.getElementById('checkerDots');
+  dots.innerHTML = checkerQuestions.map((_, i) => `<div class="checker-dot ${i<checkerStep?'done':''}"></div>`).join('');
+  const content = document.getElementById('checkerContent');
+  if (checkerStep >= checkerQuestions.length) { showEligibleSchemes(); return; }
+  const q = checkerQuestions[checkerStep];
+  content.innerHTML = `<div class="checker-q">${q.q}</div><div class="checker-options">${q.opts.map(o => `<button class="checker-opt" onclick="answerChecker('${q.key}','${o}')">${o}</button>`).join('')}</div>`;
+}
+function answerChecker(key, val) { checkerAnswers[key] = val; checkerStep++; renderChecker(); }
+function showEligibleSchemes() {
+  const income = checkerAnswers.income || '', family = checkerAnswers.family || '', location = checkerAnswers.location || '';
+  const eligible = [];
+  if (income.includes('10,000') || income.includes('Under')) eligible.push({name:'PM Garib Kalyan Anna Yojana',benefit:'5kg free ration per person per month'},{name:'Ayushman Bharat PM-JAY',benefit:'₹5 lakh free health insurance'},{name:'Jan Dhan Yojana',benefit:'Zero balance account + ₹2L insurance'});
+  if (family.includes('Pregnant')) eligible.push({name:'Janani Suraksha Yojana',benefit:'₹1,400 cash for safe delivery'},{name:'PM Ujjwala Yojana',benefit:'Free LPG gas connection'});
+  if (family.includes('Farmer')) eligible.push({name:'PM Kisan Samman Nidhi',benefit:'₹6,000/year directly in bank'},{name:'PM Fasal Bima Yojana',benefit:'Crop insurance at low premium'});
+  if (family.includes('Girl child')) eligible.push({name:'Sukanya Samriddhi Yojana',benefit:'8.2% interest savings for girl child'});
+  if (location.includes('Village') || location.includes('Rural')) eligible.push({name:'PM Awas Yojana (Gramin)',benefit:'₹1.2 lakh to build pucca house'});
+  if (location.includes('City') || location.includes('Urban')) eligible.push({name:'PM Awas Yojana (Urban)',benefit:'6.5% interest subsidy on home loan'});
+  eligible.push({name:'PM Surya Ghar Muft Bijli',benefit:'Up to 300 units free electricity/month'});
+  const unique = [...new Map(eligible.map(e => [e.name, e])).values()];
+  document.getElementById('checkerContent').innerHTML = `<div style="font-family:'Baloo 2',sans-serif;font-size:1rem;font-weight:700;color:var(--green-dark);margin-bottom:0.85rem">🎉 You may qualify for ${unique.length} schemes!</div>${unique.map(e=>`<div class="eligible-card"><div class="eligible-name">✅ ${e.name}</div><div class="eligible-benefit">${e.benefit}</div></div>`).join('')}<button onclick="checkerStep=0;checkerAnswers={};renderChecker()" style="background:none;border:1.5px solid var(--border2);border-radius:var(--radius-pill);padding:8px 18px;font-family:'Baloo 2',sans-serif;font-size:13px;font-weight:700;cursor:pointer;margin-top:8px">Check again →</button>`;
+}
+
+const schemes = [
+  {icon:'🍚',bg:'#FFF0EB',name:'PM Garib Kalyan Anna Yojana',ministry:'Ministry of Food & Public Distribution',desc:'Free foodgrains (5 kg rice/wheat per person per month) for families under National Food Security Act.',tags:[{t:'BPL Families',k:'who'},{t:'Free Ration',k:'benefit'},{t:'5kg/person/month',k:'amount'}],cats:['all'],link:'https://dfpd.gov.in'},
+  {icon:'🏥',bg:'#EAF4FB',name:'Ayushman Bharat PM-JAY',ministry:'Ministry of Health & Family Welfare',desc:'Health insurance cover of ₹5 lakh per family per year for secondary and tertiary hospitalization.',tags:[{t:'Low Income Families',k:'who'},{t:'₹5 Lakh Cover',k:'amount'},{t:'Free Treatment',k:'benefit'}],cats:['all','health'],link:'https://pmjay.gov.in'},
+  {icon:'👩',bg:'#FCE4F1',name:'PM Ujjwala Yojana',ministry:'Ministry of Petroleum',desc:'Free LPG gas connection for women from BPL households. Provides clean cooking fuel.',tags:[{t:'BPL Women',k:'who'},{t:'Free LPG Connection',k:'benefit'},{t:'1 Cylinder Free',k:'amount'}],cats:['all','women'],link:'https://pmuy.gov.in'},
+  {icon:'🌾',bg:'#E8FAF0',name:'PM Kisan Samman Nidhi',ministry:'Ministry of Agriculture',desc:'₹6,000 per year financial support to small and marginal farmer families, paid in 3 instalments.',tags:[{t:'Small Farmers',k:'who'},{t:'₹6,000/year',k:'amount'},{t:'Direct Bank Transfer',k:'benefit'}],cats:['all','farmer'],link:'https://pmkisan.gov.in'},
+  {icon:'🏠',bg:'#E8FAF0',name:'PM Awas Yojana (Gramin)',ministry:'Ministry of Rural Development',desc:'Financial assistance to build pucca houses for families living in kutcha houses in rural areas.',tags:[{t:'Rural Homeless',k:'who'},{t:'₹1.2 Lakh',k:'amount'},{t:'Pucca House',k:'benefit'}],cats:['all','housing'],link:'https://pmayg.nic.in'},
+  {icon:'👶',bg:'#FCE4F1',name:'Sukanya Samriddhi Yojana',ministry:'Ministry of Finance',desc:'Savings scheme for girl child with 8.2% interest rate. Tax free maturity for education and marriage.',tags:[{t:'Girl Child',k:'who'},{t:'8.2% Interest',k:'amount'},{t:'Tax Free',k:'benefit'}],cats:['all','women','education'],link:'https://www.indiapost.gov.in'},
+  {icon:'💰',bg:'#FEFAE0',name:'Jan Dhan Yojana',ministry:'Ministry of Finance',desc:'Zero balance bank account with RuPay debit card, ₹2 lakh accident insurance and ₹30,000 life cover.',tags:[{t:'All Citizens',k:'who'},{t:'₹2 Lakh Insurance',k:'amount'},{t:'Zero Balance Account',k:'benefit'}],cats:['all','women'],link:'https://pmjdy.gov.in'},
+  {icon:'🌱',bg:'#E8FAF0',name:'PM Fasal Bima Yojana',ministry:'Ministry of Agriculture',desc:'Crop insurance for farmers against natural calamities, pests and diseases at very low premium rates.',tags:[{t:'All Farmers',k:'who'},{t:'Low Premium',k:'amount'},{t:'Crop Loss Protection',k:'benefit'}],cats:['all','farmer'],link:'https://pmfby.gov.in'},
+  {icon:'🏥',bg:'#E8FAF0',name:'Janani Suraksha Yojana',ministry:'Ministry of Health',desc:'Cash assistance to pregnant women for institutional delivery to reduce maternal and infant mortality.',tags:[{t:'Pregnant Women',k:'who'},{t:'₹1,400 Cash',k:'amount'},{t:'Safe Delivery',k:'benefit'}],cats:['all','women','health'],link:'https://nhm.gov.in'},
+  {icon:'🏗️',bg:'#EAF4FB',name:'PM Awas Yojana (Urban)',ministry:'Ministry of Housing',desc:'Interest subsidy on home loans for EWS/LIG/MIG categories for buying or constructing houses in urban areas.',tags:[{t:'Urban Poor',k:'who'},{t:'6.5% Subsidy',k:'amount'},{t:'Own Home',k:'benefit'}],cats:['all','housing'],link:'https://pmaymis.gov.in'},
+  {icon:'⚡',bg:'#FEFAE0',name:'PM Surya Ghar Muft Bijli',ministry:'Ministry of New & Renewable Energy',desc:'Free electricity up to 300 units per month through rooftop solar panels with subsidy up to ₹78,000.',tags:[{t:'All Households',k:'who'},{t:'300 Units Free',k:'amount'},{t:'Solar Subsidy',k:'benefit'}],cats:['all','housing'],link:'https://pmsuryaghar.gov.in'},
+  {icon:'📚',bg:'#F5EEF8',name:'PM Scholarship Scheme',ministry:'Ministry of Education',desc:'Scholarships for children of ex-servicemen for professional courses up to ₹36,000/year.',tags:[{t:'Ex-servicemen Families',k:'who'},{t:'₹36,000/year',k:'amount'},{t:'Education Support',k:'benefit'}],cats:['all','education'],link:'https://ksb.gov.in'}
+];
+let schemeFilter = 'all';
+function filterSchemes(cat, btn) { schemeFilter = cat; document.querySelectorAll('.sf-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); renderSchemes(); }
+function renderSchemes() {
+  const filtered = schemes.filter(s => s.cats.includes(schemeFilter));
+  document.getElementById('schemesList').innerHTML = filtered.map(s => `<div class="scheme-card"><div class="scheme-header"><div class="scheme-icon" style="background:${s.bg}">${s.icon}</div><div><div class="scheme-name">${s.name}</div><div class="scheme-ministry">${s.ministry}</div></div></div><div class="scheme-desc">${s.desc}</div><div class="scheme-tags">${s.tags.map(t=>`<span class="scheme-tag ${t.k}">${t.t}</span>`).join('')}</div><a class="scheme-apply" href="${s.link}" target="_blank">Apply / Learn more →</a></div>`).join('');
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// ── GPAY CSV IMPORT ───────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════════════
+
+// Set default month/year on the import form
+(function setImportDefaults() {
+  const now = new Date();
+  document.getElementById('importMonth').value = now.getMonth();
+  document.getElementById('importYear').value = now.getFullYear();
+})();
+
+function handleDragOver(e) { e.preventDefault(); document.getElementById('dropZone').classList.add('drag'); }
+function handleDragLeave(e) { document.getElementById('dropZone').classList.remove('drag'); }
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById('dropZone').classList.remove('drag');
+  const file = e.dataTransfer.files[0];
+  if (file) processCSVFile(file);
+}
+function handleFileSelect(e) {
+  const file = e.target.files[0];
+  if (file) processCSVFile(file);
+}
+
+function processCSVFile(file) {
+  if (!file.name.toLowerCase().endsWith('.csv')) { showToast('Please upload a .CSV file'); return; }
+  showToast('Reading file...');
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      parsedTxns = parseGPayCSV(e.target.result);
+      showTxnPreview(parsedTxns);
+    } catch (err) {
+      showToast('Could not read file. Please check it is a valid GPay CSV.');
+    }
+  };
+  reader.readAsText(file);
+}
+
+function parseGPayCSV(csvText) {
+  const lines = csvText.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+  if (lines.length < 2) throw new Error('Empty CSV');
+
+  // Detect columns from header
+  const header = lines[0].toLowerCase().split(',').map(h => h.replace(/"/g,'').trim());
+  const colDate = header.findIndex(h => h.includes('date') || h.includes('time'));
+  const colDesc = header.findIndex(h => h.includes('description') || h.includes('merchant') || h.includes('name') || h.includes('to'));
+  const colAmt  = header.findIndex(h => h.includes('amount') || h.includes('debit') || h.includes('credit'));
+  const colType = header.findIndex(h => h.includes('type') || h.includes('dr/cr') || h.includes('transaction type'));
+  const colId   = header.findIndex(h => h.includes('id') || h.includes('reference') || h.includes('transaction id') || h.includes('txn'));
+
+  const txns = [];
+  for (let i = 1; i < lines.length; i++) {
+    const parts = smartCSVSplit(lines[i]);
+    if (parts.length < 3) continue;
+
+    const rawAmt = parts[colAmt >= 0 ? colAmt : 3] || '';
+    const cleanAmt = parseFloat(rawAmt.replace(/[₹,"\s]/g, ''));
+    if (isNaN(cleanAmt) || cleanAmt <= 0) continue;
+
+    const rawDesc = parts[colDesc >= 0 ? colDesc : 1] || '';
+    const desc = rawDesc.replace(/"/g, '').trim() || 'Payment';
+
+    const rawDate = parts[colDate >= 0 ? colDate : 0] || '';
+    const date = rawDate.replace(/"/g, '').trim();
+
+    // Determine debit vs credit
+    let isDebit = true;
+    if (colType >= 0) {
+      const t = (parts[colType] || '').toLowerCase().replace(/"/g,'');
+      if (t.includes('credit') || t.includes('cr') || t.includes('received') || t.includes('refund')) isDebit = false;
+    }
+
+    const txnId = colId >= 0 ? (parts[colId] || '').replace(/"/g,'').trim() : (date + desc + cleanAmt);
+
+    txns.push({ date, desc, amount: cleanAmt, isDebit, txnId, cat: getCatFromName(desc) });
+  }
+  return txns;
+}
+
+function smartCSVSplit(line) {
+  const result = [];
+  let cur = '', inQuote = false;
+  for (let i = 0; i < line.length; i++) {
+    if (line[i] === '"') { inQuote = !inQuote; }
+    else if (line[i] === ',' && !inQuote) { result.push(cur); cur = ''; }
+    else { cur += line[i]; }
+  }
+  result.push(cur);
+  return result;
+}
+
+function loadSampleGPay() {
+  const sample = [
+    {date:'01/04/2024',desc:'Big Basket',amount:847,isDebit:true,txnId:'SAMPLE001',cat:'Food'},
+    {date:'01/04/2024',desc:'Salary received',amount:18000,isDebit:false,txnId:'SAMPLE002',cat:'Other'},
+    {date:'02/04/2024',desc:'Ola Auto',amount:85,isDebit:true,txnId:'SAMPLE003',cat:'Transport'},
+    {date:'03/04/2024',desc:'Apollo Pharmacy',amount:320,isDebit:true,txnId:'SAMPLE004',cat:'Medical'},
+    {date:'04/04/2024',desc:'BESCOM Electricity',amount:1240,isDebit:true,txnId:'SAMPLE005',cat:'Electricity'},
+    {date:'05/04/2024',desc:'School Fee Payment',amount:2500,isDebit:true,txnId:'SAMPLE006',cat:'School'},
+    {date:'06/04/2024',desc:'D-Mart',amount:560,isDebit:true,txnId:'SAMPLE007',cat:'Food'},
+    {date:'07/04/2024',desc:'Rapido Bike Taxi',amount:45,isDebit:true,txnId:'SAMPLE008',cat:'Transport'},
+    {date:'09/04/2024',desc:'Vegetable vendor',amount:120,isDebit:true,txnId:'SAMPLE009',cat:'Food'},
+    {date:'10/04/2024',desc:'Tata 1mg',amount:210,isDebit:true,txnId:'SAMPLE010',cat:'Medical'},
+    {date:'11/04/2024',desc:'Jio Recharge',amount:299,isDebit:true,txnId:'SAMPLE011',cat:'Other'},
+    {date:'12/04/2024',desc:'Swiggy',amount:380,isDebit:true,txnId:'SAMPLE012',cat:'Food'},
+    {date:'14/04/2024',desc:'House rent',amount:6000,isDebit:true,txnId:'SAMPLE013',cat:'Rent'},
+    {date:'15/04/2024',desc:'Petrol pump',amount:500,isDebit:true,txnId:'SAMPLE014',cat:'Transport'},
+    {date:'18/04/2024',desc:'Refund from Flipkart',amount:250,isDebit:false,txnId:'SAMPLE015',cat:'Other'},
+  ];
+  parsedTxns = sample;
+  showTxnPreview(parsedTxns);
+}
+
+function showTxnPreview(txns) {
+  const debits = txns.filter(t => t.isDebit);
+  const credits = txns.filter(t => !t.isDebit);
+  const dups = debits.filter(t => state.importedTxnIds.includes(t.txnId));
+  const newTxns = debits.filter(t => !state.importedTxnIds.includes(t.txnId));
+  const total = debits.reduce((s, t) => s + t.amount, 0);
+
+  document.getElementById('txnFoundBadge').textContent = debits.length + ' debit transactions';
+  document.getElementById('txnSkipBadge').style.display = credits.length > 0 ? 'inline' : 'none';
+  document.getElementById('txnSkipBadge').textContent = credits.length + ' credits skipped';
+  document.getElementById('txnDupBadge').style.display = dups.length > 0 ? 'inline' : 'none';
+  document.getElementById('txnDupBadge').textContent = dups.length + ' already imported';
+
+  document.getElementById('statTotalDebit').textContent = '₹' + Math.round(total).toLocaleString('en-IN');
+  document.getElementById('statTxnCount').textContent = newTxns.length;
+  document.getElementById('statDupCount').textContent = dups.length;
+
+  const catClsMap = { Food:'cp-food', Transport:'cp-transport', Medical:'cp-medical', School:'cp-school', Electricity:'cp-electricity', Rent:'cp-rent', Other:'cp-other' };
+
+  const tbody = document.getElementById('txnTableBody');
+  tbody.innerHTML = debits.map((t, idx) => {
+    const isDup = state.importedTxnIds.includes(t.txnId);
+    const catCls = catClsMap[t.cat] || 'cp-other';
+    return `<tr style="${isDup?'opacity:0.5':''}">
+      <td><input type="checkbox" class="txn-checkbox" data-idx="${idx}" ${isDup?'':'checked'} ${isDup?'disabled':''}></td>
+      <td style="color:var(--text3);font-size:11px;white-space:nowrap">${t.date}</td>
+      <td style="max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px">${t.desc}${isDup?'<span class="dup-badge">duplicate</span>':''}</td>
+      <td><span class="cat-pill ${catCls}">${t.cat}</span></td>
+      <td style="color:var(--red);font-family:'Baloo 2',sans-serif;font-weight:700;white-space:nowrap">₹${Math.round(t.amount).toLocaleString('en-IN')}</td>
+    </tr>`;
+  }).join('');
+
+  allSelected = true;
+  updateSelectedCount();
+  document.getElementById('txnPreviewSection').style.display = 'block';
+  document.getElementById('importDoneSection').style.display = 'none';
+  document.getElementById('txnPreviewSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function toggleSelectAll() {
+  allSelected = !allSelected;
+  document.querySelectorAll('.txn-checkbox:not(:disabled)').forEach(cb => cb.checked = allSelected);
+  document.querySelector('.select-all-btn').textContent = allSelected ? 'Deselect All' : 'Select All';
+  updateSelectedCount();
+}
+
+function updateSelectedCount() {
+  const total = document.querySelectorAll('.txn-checkbox:not(:disabled)').length;
+  const selected = document.querySelectorAll('.txn-checkbox:not(:disabled):checked').length;
+  document.getElementById('selectedCountLabel').textContent = selected + ' of ' + total + ' selected';
+}
+
+// Listen to checkbox changes
+document.addEventListener('change', function(e) {
+  if (e.target.classList.contains('txn-checkbox')) updateSelectedCount();
+});
+
+function confirmImport() {
+  const checked = document.querySelectorAll('.txn-checkbox:checked');
+  if (!checked.length) { showToast('Please select at least one transaction'); return; }
+
+  const debits = parsedTxns.filter(t => t.isDebit);
+  let importedCount = 0;
+  const month = parseInt(document.getElementById('importMonth').value);
+  const year = parseInt(document.getElementById('importYear').value);
+
+  checked.forEach(cb => {
+    const idx = parseInt(cb.dataset.idx);
+    const t = debits[idx];
+    if (!t || state.importedTxnIds.includes(t.txnId)) return;
+
+    // Parse date or use import month/year
+    let dateMs = Date.now();
+    try {
+      const parts = t.date.split(/[\/\-]/);
+      if (parts.length >= 2) {
+        const d = parseInt(parts[0]), m = parseInt(parts[1]) - 1, y = parts[2] ? parseInt(parts[2]) : year;
+        dateMs = new Date(y < 100 ? 2000+y : y, m, d).getTime() || Date.now();
+      }
+    } catch(e) {}
+
+    const expense = {
+      id: dateMs + importedCount,
+      name: t.desc,
+      amount: Math.round(t.amount),
+      cat: t.cat,
+      member: state.activeMember,
+      time: 'GPay',
+      source: 'gpay'
+    };
+    state.expenses.unshift(expense);
+    state.importedTxnIds.push(t.txnId);
+    importedCount++;
+  });
+
+  // Log import
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  state.importHistory.unshift({
+    date: new Date().toLocaleDateString('en-IN'),
+    count: importedCount,
+    month: months[month] + ' ' + year,
+    total: parsedTxns.filter((t,i) => {
+      const cb = document.querySelector(`.txn-checkbox[data-idx="${i}"]`);
+      return cb && cb.checked && t.isDebit;
+    }).reduce((s, t) => s + t.amount, 0)
+  });
+
+  save(); updateHero(); checkDailyWarning();
+  renderImportHistory();
+
+  document.getElementById('txnPreviewSection').style.display = 'none';
+  document.getElementById('importDoneSection').style.display = 'block';
+  document.getElementById('importDoneTitle').textContent = importedCount + ' transactions imported! 🎉';
+  document.getElementById('importDoneSub').textContent = 'Added to ' + months[month] + ' ' + year + ' budget. Duplicates were automatically skipped.';
+
+  addNotifLog('📲 Imported ' + importedCount + ' GPay transactions for ' + months[month]);
+  showToast(importedCount + ' transactions imported ✅');
+}
+
+function resetImport() {
+  parsedTxns = [];
+  document.getElementById('csvFileInput').value = '';
+  document.getElementById('txnPreviewSection').style.display = 'none';
+  document.getElementById('importDoneSection').style.display = 'none';
+  document.getElementById('importUploadSection').scrollIntoView({ behavior: 'smooth' });
+}
+
+function renderImportHistory() {
+  const el = document.getElementById('importHistoryList');
+  if (!state.importHistory.length) {
+    el.innerHTML = '<div style="color:var(--text3);font-size:13px;text-align:center;padding:1rem">No imports yet</div>';
+    return;
+  }
+  el.innerHTML = state.importHistory.slice(0, 6).map(h => `
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);font-size:13px">
+      <div>
+        <div style="font-weight:700">${h.month}</div>
+        <div style="font-size:11px;color:var(--text3)">${h.date} · ${h.count} transactions</div>
+      </div>
+      <div style="font-family:'Baloo 2',sans-serif;font-weight:800;color:var(--red)">₹${Math.round(h.total||0).toLocaleString('en-IN')}</div>
+    </div>`).join('');
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// ── NOTIFICATIONS ─────────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════════════
+
+function saveNotifSettings() {
+  notifSettings.daily   = document.getElementById('togDaily').checked;
+  notifSettings.import  = document.getElementById('togImport').checked;
+  notifSettings.bill    = document.getElementById('togBill').checked;
+  notifSettings.budget  = document.getElementById('togBudget').checked;
+  notifSettings.weekly  = document.getElementById('togWeekly').checked;
+  notifSettings.time    = document.getElementById('reminderTime').value;
+  localStorage.setItem('gharkharcha-notif', JSON.stringify(notifSettings));
+}
+
+function loadNotifSettings() {
+  document.getElementById('togDaily').checked   = notifSettings.daily;
+  document.getElementById('togImport').checked  = notifSettings.import;
+  document.getElementById('togBill').checked    = notifSettings.bill;
+  document.getElementById('togBudget').checked  = notifSettings.budget;
+  document.getElementById('togWeekly').checked  = notifSettings.weekly;
+  document.getElementById('reminderTime').value = notifSettings.time || '20:00';
+  updateNotifPreview();
+}
+
+function updateNotifPreview() {
+  const t = document.getElementById('reminderTime').value;
+  const [h, m] = (t || '20:00').split(':');
+  const hh = parseInt(h); const ampm = hh >= 12 ? 'PM' : 'AM'; const h12 = hh % 12 || 12;
+  document.getElementById('previewTime').textContent = h12 + ':' + m + ' ' + ampm;
+}
+
+async function requestNotifPermission() {
+  const statusEl = document.getElementById('notifStatus');
+  if (!('Notification' in window)) {
+    statusEl.className = 'notif-status error';
+    statusEl.textContent = '❌ Browser notifications not supported. On Android, add this page to your home screen first (Chrome menu → Add to Home Screen).';
+    return;
+  }
+  if (Notification.permission === 'granted') {
+    statusEl.className = 'notif-status success';
+    statusEl.textContent = '✅ Notifications already enabled! You will receive reminders as set above.';
+    startNotifScheduler();
+    return;
+  }
+  const perm = await Notification.requestPermission();
+  if (perm === 'granted') {
+    statusEl.className = 'notif-status success';
+    statusEl.textContent = '✅ Notifications enabled! You will get reminders at ' + document.getElementById('reminderTime').value + '.';
+    startNotifScheduler();
+    addNotifLog('✅ Notifications enabled');
+    // Welcome notification
+    setTimeout(() => {
+      new Notification('🏠 GharKharcha', {
+        body: 'Reminders are now active! We will remind you to log expenses daily.',
+        icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🏠</text></svg>'
+      });
+    }, 500);
+  } else {
+    statusEl.className = 'notif-status error';
+    statusEl.textContent = '❌ Permission denied. Please go to browser Settings → Site Settings → Notifications and allow this site.';
+  }
+}
+
+function sendNotification(title, body, tag) {
+  if (!('Notification' in window) || Notification.permission !== 'granted') return;
+  try {
+    new Notification(title, {
+      body,
+      tag,
+      icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🏠</text></svg>',
+      badge: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🏠</text></svg>'
+    });
+    addNotifLog(title + ' — ' + body);
+  } catch(e) {}
+}
+
+function sendTestNotif(type) {
+  if (!('Notification' in window) || Notification.permission !== 'granted') {
+    showToast('Please enable notifications first (tap the button above)');
+    switchTab('notif');
+    return;
+  }
+  const msgs = {
+    daily:  ['🏠 GharKharcha', "🧾 Don't forget to add today's expenses! Tap to open.", 'daily-test'],
+    import: ['🏠 GharKharcha', "📲 It's the 1st! Time to import your Google Pay transactions for last month.", 'import-test'],
+    bill:   ['🏠 GharKharcha', "🔔 Bill due in 3 days! Check your Bills tab.", 'bill-test'],
+    budget: ['🏠 GharKharcha', "⚠️ You've used 80% of your monthly budget. Spend carefully!", 'budget-test']
+  };
+  const [title, body, tag] = msgs[type] || msgs.daily;
+  sendNotification(title, body, tag);
+  showToast('Test notification sent! Check your notifications.');
+}
+
+// ── SMART NOTIFICATION SCHEDULER ──────────────────────────────────────────────
+function startNotifScheduler() {
+  if (notifCheckInterval) clearInterval(notifCheckInterval);
+  // Check every minute
+  notifCheckInterval = setInterval(runNotifChecks, 60000);
+  runNotifChecks(); // Run immediately on enable
+}
+
+function runNotifChecks() {
+  if (!('Notification' in window) || Notification.permission !== 'granted') return;
+  const now = new Date();
+  const todayKey = now.toDateString();
+
+  // 1. Daily expense reminder
+  if (notifSettings.daily) {
+    const reminderTime = notifSettings.time || '20:00';
+    const [rH, rM] = reminderTime.split(':').map(Number);
+    const isReminderTime = now.getHours() === rH && now.getMinutes() === rM;
+    const lastDailyKey = 'notif-daily-' + todayKey;
+    const todayExpenses = state.expenses.filter(e => new Date(e.id).toDateString() === todayKey);
+    if (isReminderTime && todayExpenses.length === 0 && !localStorage.getItem(lastDailyKey)) {
+      sendNotification('🏠 GharKharcha', "🧾 You haven't logged any expenses today! Tap to add now.", 'daily-reminder');
+      localStorage.setItem(lastDailyKey, '1');
+    }
+  }
+
+  // 2. Monthly GPay import reminder (1st of month at 9 AM)
+  if (notifSettings.import) {
+    const isFirst = now.getDate() === 1 && now.getHours() === 9 && now.getMinutes() === 0;
+    const importKey = 'notif-import-' + now.getMonth() + '-' + now.getFullYear();
+    if (isFirst && !localStorage.getItem(importKey)) {
+      const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      const lastMonth = months[now.getMonth() === 0 ? 11 : now.getMonth() - 1];
+      sendNotification('🏠 GharKharcha', `📲 Time to import your ${lastMonth} Google Pay transactions!`, 'import-reminder');
+      localStorage.setItem(importKey, '1');
+    }
+  }
+
+  // 3. Bill due alerts (3 days before)
+  if (notifSettings.bill && state.bills.length) {
+    const today = now.getDate();
+    state.bills.forEach(bill => {
+      const daysLeft = bill.day >= today ? bill.day - today : bill.day + 31 - today;
+      if (daysLeft === 3 && now.getHours() === 9 && now.getMinutes() === 0) {
+        const billKey = 'notif-bill-' + bill.id + '-' + now.getMonth();
+        if (!localStorage.getItem(billKey)) {
+          sendNotification('🏠 GharKharcha', `🔔 ${bill.name} of ₹${bill.amt.toLocaleString('en-IN')} is due in 3 days!`, 'bill-' + bill.id);
+          localStorage.setItem(billKey, '1');
+        }
+      }
+    });
+  }
+
+  // 4. Budget 80% warning
+  if (notifSettings.budget && state.budget > 0) {
+    const spent = state.expenses.reduce((s, e) => s + e.amount, 0);
+    const pct = spent / state.budget * 100;
+    const budgetKey = 'notif-budget80-' + now.getMonth() + '-' + now.getFullYear();
+    if (pct >= 80 && pct < 100 && !localStorage.getItem(budgetKey)) {
+      sendNotification('🏠 GharKharcha', `⚠️ You've used ${Math.round(pct)}% of your budget! ₹${(state.budget - spent).toLocaleString('en-IN')} remaining.`, 'budget-warning');
+      localStorage.setItem(budgetKey, '1');
+    }
+  }
+
+  // 5. Weekly tip (Sunday 8 AM)
+  if (notifSettings.weekly && now.getDay() === 0 && now.getHours() === 8 && now.getMinutes() === 0) {
+    const weekKey = 'notif-weekly-' + Math.floor(now.getTime() / 604800000);
+    if (!localStorage.getItem(weekKey)) {
+      const tips = [
+        'Try the 50-30-20 rule: 50% needs, 30% wants, 20% savings!',
+        'Cook at home 2 extra days this week — save ₹500 easily!',
+        'Check if you qualify for any government schemes in the Schemes tab.',
+        'Set a savings goal today. Even ₹100/week adds up to ₹5,200 a year!'
+      ];
+      const tip = tips[Math.floor(Math.random() * tips.length)];
+      sendNotification('🏠 GharKharcha — Weekly Tip', '💡 ' + tip, 'weekly-tip');
+      localStorage.setItem(weekKey, '1');
+    }
+  }
+}
+
+function checkBudgetWarning() {
+  if (!state.budget) return;
+  const spent = state.expenses.reduce((s, e) => s + e.amount, 0);
+  const pct = spent / state.budget * 100;
+  const budgetKey = 'notif-budget80-' + new Date().getMonth() + '-' + new Date().getFullYear();
+  if (pct >= 80 && notifSettings.budget && !localStorage.getItem(budgetKey)) {
+    if ('Notification' in window && Notification.permission === 'granted') {
+      sendNotification('🏠 GharKharcha', `⚠️ You've used ${Math.round(pct)}% of your budget!`, 'budget-warning');
+      localStorage.setItem(budgetKey, '1');
+    }
+  }
+}
+
+function addNotifLog(msg) {
+  if (!state.notifLog) state.notifLog = [];
+  const time = new Date().toLocaleTimeString('en-IN', {hour:'2-digit', minute:'2-digit'});
+  state.notifLog.unshift({ time, msg });
+  state.notifLog = state.notifLog.slice(0, 20);
+  save();
+  renderNotifLog();
+}
+
+function renderNotifLog() {
+  const el = document.getElementById('notifLog');
+  if (!state.notifLog || !state.notifLog.length) {
+    el.innerHTML = '<div style="color:var(--text3);font-size:13px;text-align:center;padding:1rem">No notifications sent yet</div>';
+    return;
+  }
+  el.innerHTML = state.notifLog.map(n => `
+    <div class="notif-log-item">
+      <div class="notif-log-time">${n.time}</div>
+      <div class="notif-log-msg">${n.msg}</div>
+    </div>`).join('');
+}
+
+// ── TABS ───────────────────────────────────────────────────────────────────────
+const tabList = ['track','import','summary','goals','bills','debts','festival','schemes','notif'];
+function switchTab(id) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  const idx = tabList.indexOf(id);
+  if (idx >= 0) document.querySelectorAll('.tab')[idx].classList.add('active');
+  if (id === 'summary') updateSummary();
+  if (id === 'bills') renderBills();
+  if (id === 'debts') renderDebts();
+  if (id === 'notif') { loadNotifSettings(); renderNotifLog(); }
+  if (id === 'import') { renderImportHistory(); setImportMonthDefault(); }
+}
+
+function setImportMonthDefault() {
+  const now = new Date();
+  document.getElementById('importMonth').value = now.getMonth();
+  document.getElementById('importYear').value = now.getFullYear();
+}
+
+// ── UTILS ──────────────────────────────────────────────────────────────────────
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+document.getElementById('expenseInput').addEventListener('keydown', e => { if (e.key === 'Enter') addExpense(); });
+document.getElementById('budgetInput').addEventListener('keydown', e => { if (e.key === 'Enter') saveBudget(); });
+
+// ── INIT ───────────────────────────────────────────────────────────────────────
+const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+document.getElementById('navMonth').textContent = months[new Date().getMonth()] + ' ' + new Date().getFullYear();
+if (state.budget > 0) document.getElementById('budgetInput').placeholder = 'Current: ₹' + state.budget.toLocaleString('en-IN');
+if (!state.importedTxnIds) state.importedTxnIds = [];
+if (!state.importHistory) state.importHistory = [];
+if (!state.notifLog) state.notifLog = [];
+initFestivals();
+updateHero();
+checkDailyWarning();
+renderMembers();
+renderExpenses();
+renderGoals();
+renderBills();
+renderDebts();
+renderFestivals();
+renderSchemes();
+renderChecker();
+renderImportHistory();
+loadNotifSettings();
+renderNotifLog();
+
+// Auto-start notification scheduler if already granted
+if ('Notification' in window && Notification.permission === 'granted') {
+  startNotifScheduler();
+}
+
+// Check for upcoming bills on load and show banner
+setTimeout(() => {
+  if (notifSettings.bill && state.bills.length && 'Notification' in window && Notification.permission === 'granted') {
+    const today = new Date().getDate();
+    const urgent = state.bills.filter(b => {
+      const d = b.day >= today ? b.day - today : b.day + 31 - today;
+      return d <= 3;
+    });
+    if (urgent.length) {
+      sendNotification('🏠 GharKharcha', `🔔 ${urgent[0].name} is due ${urgent[0].day - today <= 0 ? 'TODAY' : 'in ' + (urgent[0].day - today) + ' days'}!`, 'bill-urgent');
+    }
+  }
+}, 3000);
+</script>
+</body>
+</html>
